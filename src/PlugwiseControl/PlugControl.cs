@@ -1,4 +1,5 @@
 using LanguageExt.Common;
+using PlugwiseControl.Actions;
 using PlugwiseControl.Cache;
 using PlugwiseControl.Message.Requests;
 using PlugwiseControl.Message.Responses;
@@ -6,12 +7,21 @@ using PlugwiseControl.Message.Responses;
 namespace PlugwiseControl;
 
 internal class PlugControl : IPlugControl {
-    private readonly IRequestManager _requestManager;
-    private readonly IUsageCache _usageCache;
+    private readonly PlugwiseActions _actions;
+    private readonly RequestManager _requestManager;
+    private readonly UsageCache _usageCache;
+    private readonly CircleInfoCache _circleInfoCache;
 
-    public PlugControl(IRequestManager requestManager, IUsageCache usageCache) {
+    public PlugControl(
+        PlugwiseActions  actions,
+        RequestManager requestManager, 
+        UsageCache usageCache, 
+        CircleInfoCache circleInfoCache
+    ) {
+        _actions = actions;
         _requestManager = requestManager;
         _usageCache = usageCache;
+        _circleInfoCache = circleInfoCache;
     }
 
     public Result<StickStatusResponse> Initialize() {
@@ -19,11 +29,11 @@ internal class PlugControl : IPlugControl {
     }
 
     public Result<SwitchOnResponse> On(string mac) {
-        return _requestManager.Send<SwitchOnResponse>(new OnRequest(mac));
+        return _actions.On(mac);
     }
 
     public Result<SwitchOffResponse> Off(string mac) {
-        return _requestManager.Send<SwitchOffResponse>(new OffRequest(mac));
+        return _actions.Off(mac);
     }
 
     public Result<CalibrationResponse> Calibrate(string mac) {
@@ -35,7 +45,7 @@ internal class PlugControl : IPlugControl {
     }
 
     public Result<CircleInfoResponse> CircleInfo(string mac) {
-        return _requestManager.Send<CircleInfoResponse>(new CircleInfoRequest(mac));
+        return _circleInfoCache.Get(mac);
     }
 
     public Result<ResultResponse> SetDateTime(string mac, long unixDStamp) {

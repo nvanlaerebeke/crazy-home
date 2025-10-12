@@ -5,14 +5,15 @@ namespace Plugwise.Config;
 internal class Settings : ISettings {
     public List<Plug> Plugs => new() {
         new("000D6F0001A5A3B6", "Rack", false, true),
-        new("000D6F00004BF588", "Desk Nico", false, true),
+        //new("000D6F00004BF588", "Desk Nico", false, true),
         new("000D6F00004BA1C6", "Lego Display", true, true),
         new("000D6F00004B992C", "Purple Christmas Tree", true, true),
-        new("000D6F0000D31AB8", "Disney Christmas Tree", true, true),
-        new("000D6F00004B9EA7", "Christmas Village", true, true),
+        //new("000D6F0000D31AB8", "Disney Christmas Tree", true, true),
+        new("000D6F00004B9EA7", "Kitchen", true, true),
         new("000D6F00004BC20A", "Book Case", true, true),
         new("000D6F000076B9B3", "Bar Cabinet", true, true),
-        new("000D6F00004BA287", "Water Fountain", true, true)
+        // Broken
+        //new("000D6F00004BA287", "Aquarium", true, true) 
     };
     /*public List<string> MacAddresses => new List<string>() {
         "000D6F0001A5A3B6", //Rack
@@ -32,11 +33,7 @@ internal class Settings : ISettings {
                 throw new ArgumentException("Environment variable PLUGWISE_SERIAL_PORT not set", SerialPort);
             }
 
-            if (!File.Exists(serialPort)) {
-                throw new Exception($"Serial port {serialPort} not found");
-            }
-
-            return serialPort;
+            return !File.Exists(serialPort) ? string.Empty : serialPort;
         }
     }
 }

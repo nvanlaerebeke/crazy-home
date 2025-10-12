@@ -1,30 +1,20 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Plugwise.Actions;
 using Plugwise.Config;
 
 namespace Plugwise.Api;
 
-public class Startup {
-    public void Start(WebApplicationBuilder builder) {
-        // Add services to the container.
-        builder.Services.AddControllers();
-
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-
-        //Initialize
-        var settings = new SettingsProvider().Get();
-        builder.Services.AddSingleton(settings);
-
-        try {
-            new Actions.Startup().Setup(builder.Services, settings.SerialPort);
-        } catch (Exception ex) {
-            Console.WriteLine(ex);
-        }
+public static class Startup {
+    public static void Start(WebApplicationBuilder builder) {
+        ConfigureServices(builder.Services);
 
         var app = builder.Build();
+        ConfigureApp(app);
+        app.Run();
+    }
 
+    private static void ConfigureApp(WebApplication app) {
         //Configure Error Handler
         app.UseExceptionHandler("/Error");
         app.UseHsts();
@@ -37,7 +27,19 @@ public class Startup {
 
         app.MapControllers();
         app.MapGet("/", () => "Hello World");
+    }
 
-        app.Run();
+    private static void ConfigureServices(IServiceCollection services) {
+        // Add services to the container.
+        services.AddControllers();
+
+        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen();
+
+        //Initialize
+        var settings = new SettingsProvider().Get();
+        services.AddSingleton(settings);
+        services.AddActions(settings);
     }
 }

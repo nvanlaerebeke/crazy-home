@@ -1,11 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Plugwise.Config;
+using PlugwiseControl;
 
 namespace Plugwise.Actions;
 
-public class Startup {
-    public void Setup(IServiceCollection serviceCollection, string serialPort) {
+public static class Startup {
+    public static void AddActions(this IServiceCollection serviceCollection, ISettings settings) {
         serviceCollection.AddSingleton<IPlugService, PlugService>();
-
-        new PlugwiseControl.Startup().Start(serviceCollection, serialPort);
+        serviceCollection.AddPlugwise(settings.SerialPort);
+        serviceCollection.AddPlugwiseCache(settings.Plugs.Select(p => p.Mac).ToList());
     }
 }

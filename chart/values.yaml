@@ -1,17 +1,39 @@
-name: plugwise
 global:
   registry: harbor.crazyzone.be/crazyzone
   image: plugwise
-  tag: latest
+  tag: 0.0.3
   #Use an existing secret for your registry
   #existingRegisrySecret: ""
-device:
-  path: /dev/ttyUSB0
+plugwise:
+  device:
+    path: /dev/ttyUSB0
 resources:
   replicaCount: 1
-hostnames:
-  - plugwise.crazyzone.be
 ingress:
-  enabled: true
-  tls:
-    existingSecret: secret-tls
+  # If true, the ingress will be created.
+  enabled: false
+  # Extra annotations for the ingress rule
+  annotations: {}
+  # Extra labels for the ingress rule
+  labels: {}
+  className: ""
+  #
+  # Example:
+  # hosts:
+  # - host: docs.example.com
+  #   paths:
+  #   - path: /
+  #     pathType: Exact
+  #   - host: docs.example.com
+  #   paths:
+  #     - path: /
+  #       pathType: Prefix
+  #
+  hosts: []
+  #
+  # Example:
+  # tls:
+  #   - hosts:
+  #     - docs.example.com
+  #     secretName: docs-tls
+  tls: []
