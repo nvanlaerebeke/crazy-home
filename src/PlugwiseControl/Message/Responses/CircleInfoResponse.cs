@@ -42,6 +42,10 @@ public class CircleInfoResponse : Response {
     }
 
     public override string ToString() {
-        return $"Code: {Code}, Sequence: {Sequence}, State: {State}";
+        try {
+            return $"Code: {Code}, Sequence: {Sequence}, State: {State}";
+        } catch (Exception) {
+            return string.Empty;
+        }
     }
 }
