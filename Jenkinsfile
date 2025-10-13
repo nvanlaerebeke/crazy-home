@@ -2,8 +2,8 @@
 pipeline {
   parameters { booleanParam(name: 'FORCE_PUSH', defaultValue: false, description: 'Will force the publishing of the packages to the registry & repository') }
   environment {
-    NAME = 'plugwise'
-    REPOSITORY = 'git@github.com:nvanlaerebeke/plugwise.git'
+    NAME = 'home'
+    REPOSITORY = 'git@github.com:nvanlaerebeke/crazy-home.git'
     REPOSITORY_CREDENTIAL_ID = 'adfe5c5e-1b1c-4ecb-9b00-e08fe30f9c8b'
     REGISTRY = "harbor.crazyzone.be/crazyzone"
     REGISTRY_HELM = "harbor.crazyzone.be/crazyzone-helm"

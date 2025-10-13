@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Plugwise.Config;
+using Home.Config;
 using PlugwiseControl;
 
 namespace Plugwise.Actions;

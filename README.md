@@ -1,7 +1,8 @@
-# Plugwise
+# Home
 
-## Mac Addresses
+## Plugwise
 
+### Mac Addresses
 
 | Type        | MAC              |
 | ----------- | ---------------- |
@@ -19,7 +20,7 @@
 Example command:
 
 ```sh
-docker run -ti -p 80:80 --device=/dev/ttyUSB0 -e PLUGWISE_SERIAL_PORT=/dev/ttyUSB0 registry.crazyzone.be/plugwise
+docker run -ti -p 80:8080 --device=/dev/ttyUSB0 -e PLUGWISE_SERIAL_PORT=/dev/ttyUSB0 harbor.crazyzone.be/home:latest
 ```
 
 The web API is exposed on port 80, change this if needed.

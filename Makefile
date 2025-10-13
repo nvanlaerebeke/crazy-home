@@ -1,6 +1,6 @@
 .PHONY: clean container push imagetag chartversion package push-target
 
-PROJECT="Plugwise"
+PROJECT="Home"
 PROJECT_LOWER=$(shell echo $(PROJECT) | tr A-Z a-z)
 PWD=$(shell pwd)
 
@@ -62,6 +62,6 @@ push-chart: package
 
 template:
 	helm template --debug -f ./chart/values.yaml -f ./values-test.yaml \
-		--set hostnames={plugwise.crazyzone.be} \
+		--set hostnames={home.crazyzone.be} \
 		--set global.imagePullSecrets={"myImagePullSecret"} \
 		${PROJECT_LOWER} ./chart

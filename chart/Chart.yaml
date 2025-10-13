@@ -1,6 +1,6 @@
 apiVersion: v2
-name: plugwise
-description: Application to communicate with the plugwise stick and circles
+name: home
+description: Consolliated API for home controll
 type: application
 version: 0.0.3
 appVersion: 0.0.3
