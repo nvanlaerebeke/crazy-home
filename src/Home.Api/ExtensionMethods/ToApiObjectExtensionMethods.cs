@@ -18,7 +18,7 @@ internal static class ToApiObjectExtensionMethods {
             Date = circleInfoResponse.Date,
             Year = circleInfoResponse.Date.Year,
             Month = circleInfoResponse.Date.Month,
-            //Min = cir,
+            Min = string.Empty,
             CurrentLog = circleInfoResponse.CurrentLog,
             State = circleInfoResponse.State,
             Hertz = circleInfoResponse.Hertz,

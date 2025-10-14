@@ -15,7 +15,7 @@ public static class Startup {
 
         services.AddSingleton<CircleInfoCache>();
         services.AddSingleton<UsageCache>();
-        services.AddSingleton<RequestManager>();
+        services.AddSingleton<IRequestManager, RequestManager>();
         services.AddSingleton<Calibrator>();
         services.AddSingleton<IPlugControl, PlugControl>();
         

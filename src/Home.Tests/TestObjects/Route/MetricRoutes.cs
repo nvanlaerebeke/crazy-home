@@ -1,6 +1,6 @@
 ﻿namespace Home.Tests.TestObjects.Route;
 
-internal static class MetricRoutes {
-    
+internal sealed class MetricRoutes {
+    public string Metric => "/Metrics";
 }
 

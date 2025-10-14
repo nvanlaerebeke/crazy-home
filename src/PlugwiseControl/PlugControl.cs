@@ -8,13 +8,13 @@ namespace PlugwiseControl;
 
 internal class PlugControl : IPlugControl {
     private readonly PlugwiseActions _actions;
-    private readonly RequestManager _requestManager;
+    private readonly IRequestManager _requestManager;
     private readonly UsageCache _usageCache;
     private readonly CircleInfoCache _circleInfoCache;
 
     public PlugControl(
         PlugwiseActions  actions,
-        RequestManager requestManager, 
+        IRequestManager requestManager, 
         UsageCache usageCache, 
         CircleInfoCache circleInfoCache
     ) {

@@ -11,7 +11,7 @@ public class CircleInfo {
     /// </summary>
     [JsonPropertyName("mac")]
     [Required(AllowEmptyStrings = false)]
-    public string Mac { get; init; } = string.Empty;
+    public required string Mac { get; init; }
     
     /// <summary>
     /// True if updating the state is allowed. (On/Off)
@@ -23,7 +23,7 @@ public class CircleInfo {
     /// Human-readable name for the plug
     /// </summary>
     [JsonPropertyName("name")] 
-    public string Name { get; init; } = string.Empty;
+    public required string Name { get; init; }
     
     /// <summary>
     /// Address of the Circle+ plug
@@ -52,7 +52,7 @@ public class CircleInfo {
     public int Month { get; init; }
 
     [JsonPropertyName("min")] 
-    public string Min { get; init; } = string.Empty;
+    public required string Min { get; init; }
 
     [JsonPropertyName("current_log")] 
     public string CurrentLog { get; init; } = string.Empty;

@@ -14,12 +14,12 @@ internal class UsageCache {
     private readonly Calibrator _calibrator;
     private readonly IMemoryCache _memoryCache;
     private readonly ILogger<UsageCache> _logger;
-    private readonly RequestManager _requestManager;
+    private readonly IRequestManager _requestManager;
 
     private record CacheRecord(double Usage, int ErrorCount);
 
     public UsageCache(
-        RequestManager requestManager, Calibrator calibrator, IMemoryCache memoryCache, ILogger<UsageCache> logger
+        IRequestManager requestManager, Calibrator calibrator, IMemoryCache memoryCache, ILogger<UsageCache> logger
     ) {
         _requestManager = requestManager;
         _calibrator = calibrator;

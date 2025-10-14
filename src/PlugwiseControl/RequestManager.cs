@@ -8,7 +8,7 @@ using PlugwiseControl.Message.Responses;
 
 namespace PlugwiseControl;
 
-internal class RequestManager {
+internal class RequestManager : IRequestManager {
     private readonly ILogger<RequestManager> _logger;
     private const int TimeOutDuration = 5000;
     private readonly Connection? _connection;

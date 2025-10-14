@@ -17,10 +17,12 @@ internal class Settings : ISettings {
         get {
             var serialPort = Environment.GetEnvironmentVariable("PLUGWISE_SERIAL_PORT");
             if (serialPort is null) {
-                throw new ArgumentException("Environment variable PLUGWISE_SERIAL_PORT not set", SerialPort);
+                return string.Empty;
             }
 
             return !File.Exists(serialPort) ? string.Empty : serialPort;
         }
     }
+
+    public bool PlugwiseBackgroundCaching => true;
 }

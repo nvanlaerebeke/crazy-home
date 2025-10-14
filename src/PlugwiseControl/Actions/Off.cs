@@ -7,10 +7,10 @@ using PlugwiseControl.Message.Responses;
 namespace PlugwiseControl.Actions;
 
 internal sealed class Off {
-    private readonly RequestManager _requestManager;
+    private readonly IRequestManager _requestManager;
     private readonly CircleInfoCache _circleInfoCache;
 
-    public Off(RequestManager requestManager, CircleInfoCache  circleInfoCache) {
+    public Off(IRequestManager requestManager, CircleInfoCache  circleInfoCache) {
         _requestManager = requestManager;
         _circleInfoCache = circleInfoCache;
     }

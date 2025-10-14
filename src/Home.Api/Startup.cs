@@ -5,8 +5,8 @@ using Home.Config;
 
 namespace Home.Api;
 
-public static class Startup {
-    public static void Start(WebApplicationBuilder builder) {
+public class Startup {
+    public virtual void Start(WebApplicationBuilder builder) {
         ConfigureServices(builder.Services);
 
         var app = builder.Build();
@@ -14,7 +14,7 @@ public static class Startup {
         app.Run();
     }
 
-    private static void ConfigureApp(WebApplication app) {
+    public virtual void ConfigureApp(WebApplication app) {
         //Configure Error Handler
         app.UseExceptionHandler("/Error");
         app.UseHsts();
@@ -29,7 +29,7 @@ public static class Startup {
         app.MapGet("/", () => "Hello World");
     }
 
-    private static void ConfigureServices(IServiceCollection services) {
+    public void ConfigureServices(IServiceCollection services) {
         // Add services to the container.
         services.AddControllers();
 

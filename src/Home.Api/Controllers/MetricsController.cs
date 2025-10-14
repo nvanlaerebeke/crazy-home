@@ -36,6 +36,6 @@ public class MetricsController : ControllerBase {
                 }
             );
         });
-        return Ok(new Metrics(plugs));
+        return Ok(new Metrics { Plugs = plugs });
     }
 }
