@@ -1,26 +1,39 @@
 using System;
 using System.Threading;
 using LanguageExt.Common;
+using Microsoft.Extensions.Logging;
 using PlugwiseControl.Message;
 using PlugwiseControl.Message.Requests;
 using PlugwiseControl.Message.Responses;
 
 namespace PlugwiseControl;
 
-internal class RequestManager : IRequestManager {
+internal class RequestManager {
+    private readonly ILogger<RequestManager> _logger;
     private const int TimeOutDuration = 5000;
-    private readonly Connection _connection;
+    private readonly Connection? _connection;
     private readonly object _requestLock = new();
     private readonly ManualResetEvent _wait = new(false);
     private Request? _currentRequest;
 
     private string _receiving = string.Empty;
 
-    public RequestManager(string serialPort) {
-        _connection = new ConnectionFactory().Get(serialPort);
+    public RequestManager(ILogger<RequestManager> logger) {
+        _logger = logger;
+        if (string.IsNullOrEmpty(Settings.SerialPort)) {
+            return;
+        }
+
+        _connection = new ConnectionFactory().Get(Settings.SerialPort);
+        Open();
     }
 
-    public void Open() {
+    private void Open() {
+        if (_connection is null) {
+            _logger.LogError("Unable to use Plugwise, serial port not set or found.");
+            return;
+        }
+        
         Console.WriteLine("Opening Connection and sending init");
 
         _connection.OnDataReceived(Received);
@@ -30,6 +43,11 @@ internal class RequestManager : IRequestManager {
     }
 
     public Result<T> Send<T>(Message.Request request) where T : Response, new() {
+        if (_connection is null) {
+            _logger.LogError("Unable to use Plugwise, serial port not set or found.");
+            return new Result<T>(new Exception("Unable to use Plugwise, serial port not set or found."));
+        }
+        
         lock (_requestLock) {
             //Send a request to the plugwise stick
             _currentRequest = new Request(new T());
@@ -75,8 +93,8 @@ internal class RequestManager : IRequestManager {
                 var stripped = !message.StartsWith('#') ? message[4..] : message;
                 Console.WriteLine("Message: " + stripped);
                 if (IsAckMessage(stripped, out var ackMessage)) {
-                    if (ackMessage.Status != Status.Success) {
-                        _currentRequest.Status = ackMessage.Status;
+                    if (ackMessage?.Status != Status.Success) {
+                        _currentRequest.Status = ackMessage?.Status ?? Status.UnKnown;
                         _wait.Set();
                         _receiving = string.Empty;
                         break;
@@ -107,7 +125,7 @@ internal class RequestManager : IRequestManager {
         }
     }
 
-    private static bool IsAckMessage(string message, out ResultResponse ackMessage) {
+    private static bool IsAckMessage(string message, out ResultResponse? ackMessage) {
         if (message.StartsWith("0000")) {
             ackMessage = new ResultResponse(message);
             return true;

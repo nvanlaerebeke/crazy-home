@@ -1,27 +1,38 @@
+{{- if .Values.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress-plugwise
+  name: {{ $.Chart.Name }}
+{{- with .Values.ingress.annotations }}  
   annotations:
-      ingress.kubernetes.io/ssl-redirect: "true"
-      kubernetes.io/ingress.allow-http: "false"
+    {{- toYaml .Values.ingress.annotations | nindent 4 }}
+{{- end }}
+{{- with .Values.ingress.labels }}
+  labels:
+    {{- toYaml . | nindent 4 }}
+{{- end }}
 spec:
-  tls:
-    - secretName: {{ .Values.tlssecret }}
-      hosts:
-      {{- range $hostname := .Values.hostnames }}
-      - {{ $hostname }}
-      {{- end }}
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
   rules:
-    {{- range $hostname := .Values.hostnames }}
-    - host: {{ $hostname }}
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .host }}
       http:
         paths:
-          - path: /
-            pathType: Prefix
+          {{- $paths := .paths | default (list (dict "path" "/" "pathType" "Prefix")) }}
+          {{- range $paths }}
+          - path: {{ .path | default "/" }}
+            pathType: {{ .pathType | default "Prefix" }}
             backend:
               service:
-                name: {{ $.Values.name }}
+                name: {{ $.Chart.Name }}
                 port:
-                  number: 80
+                  number: 8080
+          {{- end }}
     {{- end }}
+  {{- if .Values.ingress.tls }}
+  tls:
+    {{- toYaml .Values.ingress.tls | nindent 4 }}
+  {{- end }}
+{{- end }}

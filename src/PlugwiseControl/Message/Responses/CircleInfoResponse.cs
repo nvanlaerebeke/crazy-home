@@ -40,4 +40,12 @@ public class CircleInfoResponse : Response {
             Responses[2].Length.Equals(70) &&
             Responses[2].StartsWith("0024");
     }
+
+    public override string ToString() {
+        try {
+            return $"Code: {Code}, Sequence: {Sequence}, State: {State}";
+        } catch (Exception) {
+            return string.Empty;
+        }
+    }
 }
