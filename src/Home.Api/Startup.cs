@@ -6,7 +6,7 @@ using Home.Config;
 namespace Home.Api;
 
 public class Startup {
-    public virtual void Start(WebApplicationBuilder builder) {
+    public void Start(WebApplicationBuilder builder) {
         ConfigureServices(builder.Services);
 
         var app = builder.Build();

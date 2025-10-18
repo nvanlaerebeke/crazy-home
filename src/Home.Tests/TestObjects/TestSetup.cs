@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Builder;
 namespace Home.Tests.TestObjects;
 
 internal class TestSetup : Startup{
-    public override void Start(WebApplicationBuilder builder) {
+    public void Start(WebApplicationBuilder builder) {
         base.Start(builder);
     }
     

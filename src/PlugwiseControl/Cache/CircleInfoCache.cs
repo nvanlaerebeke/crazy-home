@@ -16,9 +16,7 @@ internal sealed class CircleInfoCache {
 
     private record CachedRecord(CircleInfoResponse? CircleInfoResponse, int ErrorCount);
 
-    public CircleInfoCache(
-        IRequestManager requestManager, IMemoryCache memoryCache, ILogger<CircleInfoCache> logger
-    ) {
+    public CircleInfoCache(IRequestManager requestManager, IMemoryCache memoryCache, ILogger<CircleInfoCache> logger) {
         _requestManager = requestManager;
         _memoryCache = memoryCache;
         _logger = logger;
