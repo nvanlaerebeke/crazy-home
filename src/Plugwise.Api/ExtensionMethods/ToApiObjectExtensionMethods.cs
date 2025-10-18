@@ -1,6 +1,5 @@
 ﻿using CrazyMobile.Config;
 using Plugwise.Api.Objects;
-using PlugwiseControl.Message;
 using PlugwiseControl.Message.Responses;
 
 namespace Plugwise.Api.ExtensionMethods;

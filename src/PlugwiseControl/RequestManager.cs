@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using LanguageExt.Common;
-using LanguageExt.Pretty;
 using PlugwiseControl.Message;
 using PlugwiseControl.Message.Requests;
 using PlugwiseControl.Message.Responses;
