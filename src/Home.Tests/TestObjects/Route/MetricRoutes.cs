@@ -3,4 +3,3 @@
 internal sealed class MetricRoutes {
     public string Metric => "/Metrics";
 }
-

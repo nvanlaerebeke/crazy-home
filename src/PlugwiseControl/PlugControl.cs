@@ -13,9 +13,9 @@ internal class PlugControl : IPlugControl {
     private readonly CircleInfoCache _circleInfoCache;
 
     public PlugControl(
-        PlugwiseActions  actions,
-        IRequestManager requestManager, 
-        UsageCache usageCache, 
+        PlugwiseActions actions,
+        IRequestManager requestManager,
+        UsageCache usageCache,
         CircleInfoCache circleInfoCache
     ) {
         _actions = actions;

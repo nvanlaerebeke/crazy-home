@@ -10,4 +10,3 @@ internal sealed class PlugRoutes {
     public string Calibrate(string mac) => $"/Plug/{mac}/Calibrate";
     public string SetDate(string mac, long unixDStamp) => $"/Plug/{mac}/SetDateTime/{unixDStamp}";
 }
-

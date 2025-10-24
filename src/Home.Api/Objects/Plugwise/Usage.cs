@@ -11,5 +11,6 @@ public class Usage {
     [JsonPropertyName("power_consumption")]
     public double PowerConsumption { get; }
 
-    [JsonPropertyName("unit")] public string Unit { get; }
+    [JsonPropertyName("unit")]
+    public string Unit { get; }
 }

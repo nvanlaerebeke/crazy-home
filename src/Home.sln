@@ -18,6 +18,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Tests", "Home.Tests\Ho
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Tests.Shared", "Home.Tests.Shared\Home.Tests.Shared.csproj", "{AFCA65A3-0917-41BA-8FAB-F26163ADB3CC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQTT.Actions", "MQTT.Actions\MQTT.Actions.csproj", "{635E82D7-407E-4887-845D-E169E03C132E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.CommandLine", "Home.CommandLine\Home.CommandLine.csproj", "{D1C55130-A398-4BDB-B407-34010E433A51}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +60,14 @@ Global
 		{AFCA65A3-0917-41BA-8FAB-F26163ADB3CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFCA65A3-0917-41BA-8FAB-F26163ADB3CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFCA65A3-0917-41BA-8FAB-F26163ADB3CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{635E82D7-407E-4887-845D-E169E03C132E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{635E82D7-407E-4887-845D-E169E03C132E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{635E82D7-407E-4887-845D-E169E03C132E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{635E82D7-407E-4887-845D-E169E03C132E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1C55130-A398-4BDB-B407-34010E433A51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1C55130-A398-4BDB-B407-34010E433A51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1C55130-A398-4BDB-B407-34010E433A51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1C55130-A398-4BDB-B407-34010E433A51}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{97DBBAB4-C9AA-4194-AC87-DE28F9C6DB3D} = {7F44A213-39A0-4E78-B316-23916A31EC40}

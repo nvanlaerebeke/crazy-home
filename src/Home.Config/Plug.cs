@@ -1,4 +1,4 @@
-﻿namespace Home.Config; 
+﻿namespace Home.Config;
 
 public class Plug {
     public string Mac { get; }

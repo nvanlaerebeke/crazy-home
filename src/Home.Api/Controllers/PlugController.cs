@@ -32,19 +32,23 @@ public class PlugController : ControllerBase {
                 var stateResult = _plugService.CircleInfo(plug.Mac);
 
                 if (
-                    !usageResult.IsSuccess || 
+                    !usageResult.IsSuccess ||
                     !stateResult.IsSuccess
                 ) {
                     _logger.LogError("Unable to fetch usage or state for {Mac}", plug.Mac);
                     if (usageResult.IsFaulted) {
-                        _logger.LogError("Error fetching usage: {Error}", usageResult.Match(_ => string.Empty, ex => ex.Message));
+                        _logger.LogError("Error fetching usage: {Error}",
+                            usageResult.Match(_ => string.Empty, ex => ex.Message));
                     }
+
                     if (stateResult.IsFaulted) {
-                        _logger.LogError("Error fetching state: {Error}", stateResult.Match(_ => string.Empty, ex => ex.Message));
+                        _logger.LogError("Error fetching state: {Error}",
+                            stateResult.Match(_ => string.Empty, ex => ex.Message));
                     }
+
                     return;
                 }
-            
+
                 var usage = usageResult.Match(u => u, ex => throw ex);
                 var circleInfo = stateResult.Match(s => s, ex => throw ex);
                 if (!circleInfo.IsComplete()) {
@@ -71,25 +75,28 @@ public class PlugController : ControllerBase {
         if (plug is null) {
             return NotFound();
         }
-        
+
         var usageResult = _plugService.Usage(plug.Mac);
         var stateResult = _plugService.CircleInfo(plug.Mac);
 
         if (
-            !usageResult.IsSuccess || 
+            !usageResult.IsSuccess ||
             !stateResult.IsSuccess
         ) {
             _logger.LogError("Unable to fetch usage or state for {Mac}", plug.Mac);
             if (usageResult.IsFaulted) {
-                _logger.LogError("Error fetching usage: {Error}", usageResult.Match(_ => string.Empty, ex => ex.Message));
+                _logger.LogError("Error fetching usage: {Error}",
+                    usageResult.Match(_ => string.Empty, ex => ex.Message));
                 return usageResult.ToOk(_ => Ok());
             }
+
             if (stateResult.IsFaulted) {
-                _logger.LogError("Error fetching state: {Error}", stateResult.Match(_ => string.Empty, ex => ex.Message));
+                _logger.LogError("Error fetching state: {Error}",
+                    stateResult.Match(_ => string.Empty, ex => ex.Message));
                 return stateResult.ToOk(_ => Ok());
             }
         }
-            
+
         var usage = usageResult.Match(u => u, ex => throw ex);
         var circleInfo = stateResult.Match(s => s, ex => throw ex);
         return new OkObjectResult(circleInfo.ToApiObject(plug, usage));
@@ -98,24 +105,28 @@ public class PlugController : ControllerBase {
     [HttpPost("[action]/{mac}")]
     public IActionResult On(string mac) {
         var plug = _settings.Plugs.FirstOrDefault(p => p.Mac.Equals(mac));
-        if(plug is null) {
+        if (plug is null) {
             return NotFound();
         }
+
         if (!plug.PowerControl) {
             return Unauthorized();
         }
+
         return _plugService.On(mac).ToOk(_ => Ok());
     }
 
     [HttpPost("[action]/{mac}")]
     public IActionResult Off(string mac) {
         var plug = _settings.Plugs.FirstOrDefault(p => p.Mac.Equals(mac));
-        if(plug is null) {
+        if (plug is null) {
             return NotFound();
         }
+
         if (!plug.PowerControl) {
             return Unauthorized();
         }
+
         return _plugService.Off(mac).ToOk(_ => Ok());
     }
 
@@ -124,6 +135,7 @@ public class PlugController : ControllerBase {
         if (!_settings.Plugs.Select(p => p.Mac).Contains(mac)) {
             return NotFound();
         }
+
         return _plugService.Usage(mac).ToOk(r => new Usage(r, "Wh"));
     }
 
@@ -131,12 +143,14 @@ public class PlugController : ControllerBase {
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Calibration))]
     public IActionResult Calibrate(string mac) {
         var plug = _settings.Plugs.FirstOrDefault(p => p.Mac.Equals(mac));
-        if(plug is null) {
+        if (plug is null) {
             return NotFound();
         }
+
         if (!plug.PowerControl) {
             return Unauthorized();
         }
+
         return _plugService.Calibrate(mac).ToOk(r => r.ToApiObject());
     }
 
@@ -144,12 +158,14 @@ public class PlugController : ControllerBase {
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult SetDateTime(string mac, long unixDStamp) {
         var plug = _settings.Plugs.FirstOrDefault(p => p.Mac.Equals(mac));
-        if(plug is null) {
+        if (plug is null) {
             return NotFound();
         }
+
         if (!plug.PowerControl) {
             return Unauthorized();
         }
+
         return _plugService.SetDateTime(mac, unixDStamp).ToOk(_ => Ok());
     }
 }

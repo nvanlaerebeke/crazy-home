@@ -7,11 +7,10 @@ namespace Home.Api.ExtensionMethods;
 internal static class ToApiObjectExtensionMethods {
     public static StickStatus ToApiObject(this StickStatusResponse stickStatusResponse) {
         return new StickStatus {
-            StickMac = stickStatusResponse.StickMac,
-            IsCirclePlus = stickStatusResponse.IsCirclePlus
+            StickMac = stickStatusResponse.StickMac, IsCirclePlus = stickStatusResponse.IsCirclePlus
         };
     }
-    
+
     public static CircleInfo ToApiObject(this CircleInfoResponse circleInfoResponse, Plug plug, double usage) {
         return new CircleInfo {
             CirclePlusMac = circleInfoResponse.CirclePlusMac,

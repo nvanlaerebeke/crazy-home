@@ -12,7 +12,7 @@ internal class Settings : ISettings {
         new("000D6F000076B9B3", "Bar Cabinet", true, true),
         //new("000D6F00004BA287", "Aquarium", true, true) 
     };
-    
+
     public string SerialPort {
         get {
             var serialPort = Environment.GetEnvironmentVariable("PLUGWISE_SERIAL_PORT");

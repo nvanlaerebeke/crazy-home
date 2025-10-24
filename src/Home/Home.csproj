@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Home.Api\Home.Api.csproj"/>
+        <ProjectReference Include="..\Home.CommandLine\Home.CommandLine.csproj" />
     </ItemGroup>
 
 </Project>

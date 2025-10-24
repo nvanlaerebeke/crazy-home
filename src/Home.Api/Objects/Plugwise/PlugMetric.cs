@@ -15,15 +15,15 @@ public class PlugMetric {
     [JsonPropertyName("allowStateUpdate")]
     public bool AllowStateUpdate { get; }
 
-    [JsonPropertyName("mac")] 
+    [JsonPropertyName("mac")]
     public string Mac { get; }
-    
-    [JsonPropertyName("name")] 
+
+    [JsonPropertyName("name")]
     public string Name { get; }
 
-    [JsonPropertyName("usage")] 
+    [JsonPropertyName("usage")]
     public double Usage { get; }
 
-    [JsonPropertyName("unit")] 
+    [JsonPropertyName("unit")]
     public string Unit { get; }
 }

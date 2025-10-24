@@ -9,11 +9,11 @@ public static class ControllerExtensions {
         this Result<TResult> result, Func<TResult, TContract> mapper
     ) {
         return result.Match<IActionResult>(
-            obj => new OkObjectResult(mapper(obj)), 
+            obj => new OkObjectResult(mapper(obj)),
             ToError
         );
     }
-   
+
     public static IActionResult ToError(Exception exception) {
         if (exception is not HomeApiException) {
             throw exception;

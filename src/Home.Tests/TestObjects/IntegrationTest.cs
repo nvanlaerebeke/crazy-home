@@ -25,5 +25,4 @@ internal abstract class IntegrationTest {
     }
 
     protected HttpClient GetClient() => _client;
-    
 }

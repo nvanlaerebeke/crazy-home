@@ -9,7 +9,7 @@ namespace Home.Tests.TestObjects;
 
 internal sealed class CustomWebApplicationFactory : WebApplicationFactory<Program> {
     internal ExternalServices ExternalServices { get; } = new();
-    
+
     protected override void ConfigureWebHost(IWebHostBuilder builder) {
         builder.UseEnvironment("Testing");
 

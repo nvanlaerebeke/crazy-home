@@ -5,4 +5,3 @@ internal sealed class HealthRoutes {
     public string Ready() => "/readyz";
     public string Health() => "/healthz";
 }
-

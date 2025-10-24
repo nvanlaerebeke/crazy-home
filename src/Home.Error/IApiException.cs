@@ -1,5 +1,4 @@
-﻿namespace Home.Error; 
+﻿namespace Home.Error;
 
 public interface IApiException {
-    
 }

@@ -15,8 +15,6 @@ public class HomeApiException : ApiException<ApiErrorCode> {
     }
 
     public static HomeApiException from(ApiErrorCode error, string message, HttpStatusCode httpStatusCode) {
-        return new HomeApiException(new ApiError(error, httpStatusCode) {
-            Message = message
-        });
+        return new HomeApiException(new ApiError(error, httpStatusCode) { Message = message });
     }
 }

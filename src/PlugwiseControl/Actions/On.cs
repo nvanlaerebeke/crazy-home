@@ -10,7 +10,7 @@ internal sealed class On {
     private readonly IRequestManager _requestManager;
     private readonly CircleInfoCache _circleInfoCache;
 
-    public On(IRequestManager requestManager, CircleInfoCache  circleInfoCache) {
+    public On(IRequestManager requestManager, CircleInfoCache circleInfoCache) {
         _requestManager = requestManager;
         _circleInfoCache = circleInfoCache;
     }
@@ -21,6 +21,7 @@ internal sealed class On {
                 if (response.Status == Status.Success) {
                     _circleInfoCache.Invalidate(mac);
                 }
+
                 return response;
             },
             ex => new Result<SwitchOnResponse>(ex));

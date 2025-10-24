@@ -1,0 +1,36 @@
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    restart: unless-stopped
+    ports:
+      - "1883:1883"               # MQTT TCP (optional to expose to host; containers talk via service name)
+      # - "9001:9001"             # (optional) MQTT over WebSockets if you enable it in mosquitto.conf
+    volumes:
+      - ./data/mosquitto:/mosquitto
+
+  zigbee2mqtt:
+    image: koenkk/zigbee2mqtt:latest
+    restart: unless-stopped
+    depends_on: [ mosquitto ]
+    ports:
+      - "8080:8080"               # Zigbee2MQTT web UI
+    volumes:
+      - ./data/zigbee:/app/data
+      - /run/udev:/run/udev:ro
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0"  # keep if you’re using a USB coordinator
+    environment:
+      - TZ=Europe/Brussels
+      
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: homeassistant
+    restart: unless-stopped
+    # Host networking is recommended by HA for discovery, casting, mDNS, etc.
+    network_mode: host
+    environment:
+      - TZ=Europe/Brussels
+    volumes:
+      - ./data/homeassistant:/config
+      - /etc/localtime:/etc/localtime:ro
+    depends_on: [ mosquitto ]

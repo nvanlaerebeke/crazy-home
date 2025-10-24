@@ -27,7 +27,7 @@ internal class PlugService : IPlugService {
             return _plugControl.Off(mac).Match(
                 r => r.Status == Status.Success,
                 ex => new Result<bool>(ex)
-            ); 
+            );
         } catch (Exception ex) {
             return new Result<bool>(ex);
         }
