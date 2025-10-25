@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Home.Config\Home.Config.csproj" />
+      <ProjectReference Include="..\Home.Shared\Home.Shared.csproj" />
     </ItemGroup>
 
 </Project>

@@ -5,10 +5,10 @@ using PlugwiseControl.Message.Responses;
 
 namespace Plugwise.Actions;
 
-internal class PlugService : IPlugService {
+internal class PlugwiseService : IPlugwiseService {
     private readonly IPlugControl _plugControl;
 
-    public PlugService(IPlugControl plugControl) {
+    public PlugwiseService(IPlugControl plugControl) {
         _plugControl = plugControl;
     }
 

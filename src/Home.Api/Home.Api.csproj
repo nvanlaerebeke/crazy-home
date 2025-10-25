@@ -11,6 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Home.Shared\Home.Shared.csproj" />
         <ProjectReference Include="..\MQTT.Actions\MQTT.Actions.csproj" />
         <ProjectReference Include="..\Plugwise.Actions\Plugwise.Actions.csproj"/>
     </ItemGroup>

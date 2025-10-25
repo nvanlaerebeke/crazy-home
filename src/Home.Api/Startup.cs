@@ -27,7 +27,6 @@ public class Startup {
         app.UseAuthorization();
 
         app.MapControllers();
-        app.MapGet("/", () => "Hello World");
     }
 
     public void ConfigureServices(IServiceCollection services) {

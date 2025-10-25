@@ -1,4 +1,5 @@
 using System;
+using Home.Shared;
 
 namespace PlugwiseControl.Message.Responses;
 

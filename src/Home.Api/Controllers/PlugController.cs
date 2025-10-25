@@ -1,171 +1,46 @@
 using Home.Api.ExtensionMethods;
-using Home.Api.Objects.Plugwise;
-using Home.Config;
+using Home.Api.Objects.Mqtt;
+using Home.Api.Objects.Mqtt.ExtensionMethods;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Plugwise.Actions;
+using MQTT.Actions;
 
 namespace Home.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 public class PlugController : ControllerBase {
-    private readonly IPlugService _plugService;
-    private readonly ISettings _settings;
-    private readonly ILogger<PlugController> _logger;
+    private readonly IMqttPlugActions _plugActions;
 
-    public PlugController(IPlugService plugService, ISettings settings, ILogger<PlugController> logger) {
-        _plugService = plugService;
-        _settings = settings;
-        _logger = logger;
+    public PlugController(IMqttPlugActions plugActions) {
+        _plugActions = plugActions;
     }
 
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<CircleInfo>))]
-    public IActionResult Get() {
-        var plugs = new List<CircleInfo>();
-        var tasks = new List<Task>();
-        _settings.Plugwise.Plugs.Select(p => p).ToList().ForEach(plug => {
-            tasks.Add(Task.Run(() => {
-                var usageResult = _plugService.Usage(plug.Identifier);
-                var stateResult = _plugService.CircleInfo(plug.Identifier);
-
-                if (
-                    !usageResult.IsSuccess ||
-                    !stateResult.IsSuccess
-                ) {
-                    _logger.LogError("Unable to fetch usage or state for {Mac}", plug.Identifier);
-                    if (usageResult.IsFaulted) {
-                        _logger.LogError("Error fetching usage: {Error}",
-                            usageResult.Match(_ => string.Empty, ex => ex.Message));
-                    }
-
-                    if (stateResult.IsFaulted) {
-                        _logger.LogError("Error fetching state: {Error}",
-                            stateResult.Match(_ => string.Empty, ex => ex.Message));
-                    }
-
-                    return;
-                }
-
-                var usage = usageResult.Match(u => u, ex => throw ex);
-                var circleInfo = stateResult.Match(s => s, ex => throw ex);
-                if (!circleInfo.IsComplete()) {
-                    return;
-                }
-
-                plugs.Add(circleInfo.ToApiObject(plug, usage));
-            }));
-        });
-        Task.WaitAll(tasks.ToArray());
-        return Ok(plugs);
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<PlugStatus>))]
+    public async Task<IActionResult> Get() {
+        var result = await _plugActions.GetAllAsync();
+        var response = result.Match(r => r.Select(y => y.ToApiObject()), _ => []);
+        return Ok(response);
+        return result.ToOk(x => x.Select(y => y.ToApiObject()).ToList());
+    }
+    
+    [HttpGet("{identifier}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PlugStatus))]
+    public async Task<IActionResult> Get(string identifier) {
+        var plugStatusResult = await _plugActions.GetPlugInfoAsync(identifier);
+        return plugStatusResult.ToOk(x => x?.ToApiObject());
     }
 
-    [HttpGet("[action]")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StickStatus))]
-    public IActionResult Initialize() {
-        return _plugService.Initialize().ToOk(r => r.ToApiObject());
+    [HttpPost("[action]/{identifier}")]
+    public async Task<IActionResult> On(string identifier) {
+        var result = await _plugActions.SetOnAsync(identifier);
+        return result.ToOk(_ => Ok());
     }
 
-    [HttpGet("/[controller]/{mac}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CircleInfo))]
-    public IActionResult Circle(string mac) {
-        var plug = _settings.Plugwise.Plugs.FirstOrDefault(p => p.Identifier.Equals(mac));
-        if (plug is null) {
-            return NotFound();
-        }
-
-        var usageResult = _plugService.Usage(plug.Identifier);
-        var stateResult = _plugService.CircleInfo(plug.Identifier);
-
-        if (
-            !usageResult.IsSuccess ||
-            !stateResult.IsSuccess
-        ) {
-            _logger.LogError("Unable to fetch usage or state for {Mac}", plug.Identifier);
-            if (usageResult.IsFaulted) {
-                _logger.LogError("Error fetching usage: {Error}",
-                    usageResult.Match(_ => string.Empty, ex => ex.Message));
-                return usageResult.ToOk(_ => Ok());
-            }
-
-            if (stateResult.IsFaulted) {
-                _logger.LogError("Error fetching state: {Error}",
-                    stateResult.Match(_ => string.Empty, ex => ex.Message));
-                return stateResult.ToOk(_ => Ok());
-            }
-        }
-
-        var usage = usageResult.Match(u => u, ex => throw ex);
-        var circleInfo = stateResult.Match(s => s, ex => throw ex);
-        return new OkObjectResult(circleInfo.ToApiObject(plug, usage));
-    }
-
-    [HttpPost("[action]/{mac}")]
-    public IActionResult On(string mac) {
-        var plug = _settings.Plugwise.Plugs.FirstOrDefault(p => p.Identifier.Equals(mac));
-        if (plug is null) {
-            return NotFound();
-        }
-
-        if (!plug.PowerControl) {
-            return Unauthorized();
-        }
-
-        return _plugService.On(mac).ToOk(_ => Ok());
-    }
-
-    [HttpPost("[action]/{mac}")]
-    public IActionResult Off(string mac) {
-        var plug = _settings.Plugwise.Plugs.FirstOrDefault(p => p.Identifier.Equals(mac));
-        if (plug is null) {
-            return NotFound();
-        }
-
-        if (!plug.PowerControl) {
-            return Unauthorized();
-        }
-
-        return _plugService.Off(mac).ToOk(_ => Ok());
-    }
-
-    [HttpGet("[action]/{mac}")]
-    public IActionResult Usage(string mac) {
-        if (!_settings.Plugwise.Plugs.Select(p => p.Identifier).Contains(mac)) {
-            return NotFound();
-        }
-
-        return _plugService.Usage(mac).ToOk(r => new Usage(r, "Wh"));
-    }
-
-    [HttpGet("[action]/{mac}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Calibration))]
-    public IActionResult Calibrate(string mac) {
-        var plug = _settings.Plugwise.Plugs.FirstOrDefault(p => p.Identifier.Equals(mac));
-        if (plug is null) {
-            return NotFound();
-        }
-
-        if (!plug.PowerControl) {
-            return Unauthorized();
-        }
-
-        return _plugService.Calibrate(mac).ToOk(r => r.ToApiObject());
-    }
-
-    [HttpPost("[action]/{mac}/{unixDStamp}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult SetDateTime(string mac, long unixDStamp) {
-        var plug = _settings.Plugwise.Plugs.FirstOrDefault(p => p.Identifier.Equals(mac));
-        if (plug is null) {
-            return NotFound();
-        }
-
-        if (!plug.PowerControl) {
-            return Unauthorized();
-        }
-
-        return _plugService.SetDateTime(mac, unixDStamp).ToOk(_ => Ok());
+    [HttpPost("[action]/{identifier}")]
+    public async Task<IActionResult> Off(string identifier) {
+        var result = await _plugActions.SetOffAsync(identifier);
+        return result.ToOk(_ => Ok());
     }
 }

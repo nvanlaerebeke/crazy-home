@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MQTT.Actions.Message;
+namespace MQTT.Actions.Message.Receive.PlugStatus;
 
-public sealed class UpdateInfo {
+internal sealed class UpdateInfo {
     [JsonPropertyName("installed_version")]
     public required int InstalledVersion { get; init; }
 

@@ -3,7 +3,7 @@ using PlugwiseControl.Message.Responses;
 
 namespace Plugwise.Actions;
 
-public interface IPlugService {
+public interface IPlugwiseService {
     Result<StickStatusResponse> Initialize();
     Result<bool> On(string mac);
     Result<bool> Off(string mac);

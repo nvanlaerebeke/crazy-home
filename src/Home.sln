@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQTT.Actions", "MQTT.Action
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.CommandLine", "Home.CommandLine\Home.CommandLine.csproj", "{D1C55130-A398-4BDB-B407-34010E433A51}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Shared", "Home.Shared\Home.Shared.csproj", "{0B7DA193-BAF1-47FD-AF84-C76661521944}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +70,10 @@ Global
 		{D1C55130-A398-4BDB-B407-34010E433A51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1C55130-A398-4BDB-B407-34010E433A51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1C55130-A398-4BDB-B407-34010E433A51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B7DA193-BAF1-47FD-AF84-C76661521944}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B7DA193-BAF1-47FD-AF84-C76661521944}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B7DA193-BAF1-47FD-AF84-C76661521944}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B7DA193-BAF1-47FD-AF84-C76661521944}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{97DBBAB4-C9AA-4194-AC87-DE28F9C6DB3D} = {7F44A213-39A0-4E78-B316-23916A31EC40}

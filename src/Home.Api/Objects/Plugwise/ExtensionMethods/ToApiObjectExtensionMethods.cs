@@ -1,8 +1,7 @@
-﻿using Home.Api.Objects.Plugwise;
-using Home.Config;
+﻿using Home.Config;
 using PlugwiseControl.Message.Responses;
 
-namespace Home.Api.ExtensionMethods;
+namespace Home.Api.Objects.Plugwise.ExtensionMethods;
 
 internal static class ToApiObjectExtensionMethods {
     public static StickStatus ToApiObject(this StickStatusResponse stickStatusResponse) {

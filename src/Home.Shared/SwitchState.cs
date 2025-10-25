@@ -1,4 +1,4 @@
-namespace PlugwiseControl.Message;
+namespace Home.Shared;
 
 public enum SwitchState {
     Off,

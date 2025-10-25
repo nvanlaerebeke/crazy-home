@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 using Home.Config;
-using PlugwiseControl.Message;
+using Home.Shared;
 using PlugwiseControl.Message.Responses;
 
 namespace Home.Api.Objects.Plugwise;

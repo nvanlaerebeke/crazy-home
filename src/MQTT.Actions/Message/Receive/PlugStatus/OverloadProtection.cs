@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MQTT.Actions.Message;
+namespace MQTT.Actions.Message.Receive.PlugStatus;
 
-public sealed class OverloadProtection {
+internal sealed class OverloadProtection {
     [JsonPropertyName("enable_max_voltage")]
     public required string EnableMaxVoltage { get; init; }
 

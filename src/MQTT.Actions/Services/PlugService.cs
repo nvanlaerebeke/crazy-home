@@ -5,6 +5,9 @@ using MQTT.Actions.Cache;
 
 namespace MQTT.Actions.Services;
 
+/// <summary>
+/// Service that updates the plug status every x amount of time
+/// </summary>
 internal sealed class PlugService : BackgroundService {
     private readonly PlugCache _plugCache;
     private readonly ISettings _settings;

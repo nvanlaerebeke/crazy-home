@@ -1,45 +1,45 @@
-﻿#nullable enable
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using MQTT.Actions.Message.Receive.PlugStatus;
 
 namespace MQTT.Actions.Message;
 
-public sealed class PlugStatus {
+internal sealed class PlugStatus {
     [JsonPropertyName("current")]
-    public required double Current { get; init; }
+    public double Current { get; init; }
 
     [JsonPropertyName("energy_month")]
-    public required double EnergyMonth { get; init; }
+    public double EnergyMonth { get; init; }
 
     [JsonPropertyName("energy_today")]
-    public required double EnergyToday { get; init; }
+    public double EnergyToday { get; init; }
 
     [JsonPropertyName("energy_yesterday")]
-    public required double EnergyYesterday { get; init; }
+    public double EnergyYesterday { get; init; }
 
     [JsonPropertyName("inching_control_set")]
-    public required InchingControlSet InchingControlSet { get; init; }
+    public InchingControlSet? InchingControlSet { get; init; }
 
     [JsonPropertyName("linkquality")]
-    public required int Linkquality { get; init; }
+    public int LinkQuality { get; init; }
 
     [JsonPropertyName("outlet_control_protect")]
-    public required bool OutletControlProtect { get; init; }
+    public bool OutletControlProtect { get; init; }
 
     [JsonPropertyName("overload_protection")]
-    public required OverloadProtection OverloadProtection { get; init; }
+    public OverloadProtection? OverloadProtection { get; init; }
 
     [JsonPropertyName("power")]
-    public required double Power { get; init; }
+    public double Power { get; init; }
 
     [JsonPropertyName("power_on_behavior")]
-    public required string PowerOnBehavior { get; init; }
+    public string PowerOnBehavior { get; init; } = string.Empty;
 
     [JsonPropertyName("state")]
-    public required string State { get; init; }
+    public string State { get; init; } = string.Empty;
 
     [JsonPropertyName("update")]
-    public required UpdateInfo Update { get; init; }
+    public UpdateInfo? Update { get; init; }
 
     [JsonPropertyName("voltage")]
-    public required double Voltage { get; init; }
+    public double Voltage { get; init; }
 }

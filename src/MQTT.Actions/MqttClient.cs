@@ -1,6 +1,8 @@
 ﻿using Home.Config;
 using Microsoft.Extensions.Logging;
+using MQTT.Actions.Message.Request;
 using MQTTnet;
+using MQTTnet.Exceptions;
 using MQTTnet.Formatter;
 
 namespace MQTT.Actions;
@@ -8,7 +10,7 @@ namespace MQTT.Actions;
 /// <summary>
 /// The Mqtt client that connects to the Zigbee controller
 /// </summary>
-public sealed class MqttClient {
+internal sealed class MqttClient {
     private readonly ISettings _settings;
     private readonly ILogger<MqttClient> _logger;
 
@@ -77,8 +79,7 @@ public sealed class MqttClient {
                 .Build()
             );
             await _client.SubscribeAsync("zigbee2mqtt/#");
-        }
-        finally {
+        } finally {
             _lock.Release();
         }
     }
@@ -107,31 +108,34 @@ public sealed class MqttClient {
     /// <summary>
     /// Method called when the client disconnects
     /// </summary>
-    /// <param name="e"></param>
+    /// <param name="eventArgs"></param>
     /// <returns></returns>
-    private async Task OnDisconnectedAsync(MqttClientDisconnectedEventArgs e) {
+    private async Task OnDisconnectedAsync(MqttClientDisconnectedEventArgs eventArgs) {
         if (_client is null) {
             _logger.LogWarning("Already Disconnected");
             return;
         }
+        
+        if (eventArgs.Exception is not null) {
+            _logger.LogError(eventArgs.Exception, "Disconnected: {Reason}", eventArgs.Reason);
+        } else {
+            _logger.LogInformation("Disconnected: {Reason}", eventArgs.Reason);
+        }
 
         _client.ConnectedAsync -= OnConnectedAsync;
+        _client.ConnectingAsync -= OnConnectingAsync;
         _client.DisconnectedAsync -= OnDisconnectedAsync;
         _client.ApplicationMessageReceivedAsync -= OnMessageReceivedAsync;
 
-        _onConnectedActions.Clear();
-        _onConnectingActions.Clear();
-        _onDisconnectedActions.Clear();
-        _onMessageReceivedActions.Clear();
-
-        if (e.Exception is not null) {
-            _logger.LogError(e.Exception, "Disconnected: {Reason}", e.Reason);
-        } else {
-            _logger.LogInformation("Disconnected: {Reason}", e.Reason);
+        try {
+            _client?.Dispose();
+        } catch (Exception ex) {
+            _logger.LogError(ex, "Error while disconnecting");
         }
+        _client = null;
         
         foreach (var action in _onDisconnectedActions) {
-            await action(e);
+            await action(eventArgs);
         }
     }
 
@@ -142,7 +146,7 @@ public sealed class MqttClient {
     /// <returns></returns>
     private async Task OnConnectedAsync(MqttClientConnectedEventArgs e) {
         _logger.LogInformation("Connected: {Result}", e.ConnectResult);
-        
+
         foreach (var action in _onConnectedActions) {
             await action(e);
         }
@@ -163,8 +167,7 @@ public sealed class MqttClient {
                     new MqttClientDisconnectOptionsBuilder()
                         .WithReason(MqttClientDisconnectOptionsReason.NormalDisconnection).Build()
                 );
-        }
-        finally {
+        } finally {
             _lock.Release();
         }
     }
@@ -186,11 +189,27 @@ public sealed class MqttClient {
     }
 
     /// <summary>
+    /// Remove a subscription from the OnDisconnected list
+    /// </summary>
+    /// <param name="action"></param>
+    public void UnSubscribeOnDisconnected(Func<MqttClientDisconnectedEventArgs, Task> action) {
+        _onDisconnectedActions.Remove(action);
+    }
+
+    /// <summary>
     /// Adds a function to be called when the client receives a message
     /// </summary>
     /// <param name="action"></param>
     public void OnMessageReceived(Func<MqttApplicationMessageReceivedEventArgs, Task> action) {
         _onMessageReceivedActions.Add(action);
+    }
+
+    /// <summary>
+    /// Remove a subscription from the OnMessageReceived list
+    /// </summary>
+    /// <param name="action"></param>
+    public void UnSubscribeOnMessageReceived(Func<MqttApplicationMessageReceivedEventArgs, Task> action) {
+        _onMessageReceivedActions.Remove(action);
     }
 
     /// <summary>
@@ -202,4 +221,19 @@ public sealed class MqttClient {
     }
 
     public bool IsConnected() => _client is not null;
+
+    public async Task SendAsync(IMqttRequest request) {
+        if (_client is null) {
+            await ConnectAsync();
+        }
+
+        if (_client is null) {
+            throw new MqttClientNotConnectedException();
+        }
+
+        await _client.PublishAsync(new MqttApplicationMessageBuilder()
+            .WithTopic(request.GetTopic())
+            .WithPayload(request.GetPayload())
+            .Build());
+    }
 }
