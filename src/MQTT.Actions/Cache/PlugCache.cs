@@ -10,6 +10,8 @@ internal sealed class PlugCache {
     private readonly IMemoryCache _memoryCache;
     private readonly DeviceCache _deviceCache;
 
+    public record PlugCacheEntry(string Id, PlugStatusDto Status, DateTime LastUpdated);
+
     public PlugCache(IMemoryCache memoryCache, DeviceCache deviceCache) {
         _memoryCache = memoryCache;
         _deviceCache = deviceCache;
@@ -19,19 +21,32 @@ internal sealed class PlugCache {
         return _deviceCache.GetAll(DeviceType.Plug).Select(Get).OfType<PlugStatusDto>().ToList();
     }
 
-    public PlugStatusDto? Get(string identifier) {
-        if (!_memoryCache.TryGetValue(GetKey(identifier), out PlugStatusDto? cachedRecord) || cachedRecord is null) {
-            return null;
-        }
-        return cachedRecord;
+    public PlugStatusDto? Get(string id) {
+        return GetCacheEntry(id)?.Status;
+    }
+
+    public List<PlugCacheEntry> GetCacheEntries() {
+        return _deviceCache.GetAll(DeviceType.Plug).Select(GetCacheEntry).OfType<PlugCacheEntry>().ToList();
     }
 
     public void Set(PlugStatusDto plugStatus) {
-        _memoryCache.Set(GetKey(plugStatus.Identifier), plugStatus, _cacheDuration);
+        _memoryCache.Set(GetKey(plugStatus.Identifier), new PlugCacheEntry(plugStatus.Identifier, plugStatus, DateTime.Now), _cacheDuration);
     }
 
     public void Invalidate(string identifier) {
-        _memoryCache.Remove(GetKey(identifier));
+        if (!_memoryCache.TryGetValue(GetKey(identifier), out PlugCacheEntry? cachedRecord) || cachedRecord is null) {
+            return;
+        }
+
+        _memoryCache.Remove(cachedRecord);
+    }
+
+    private PlugCacheEntry? GetCacheEntry(string id) {
+        if (!_memoryCache.TryGetValue(GetKey(id), out PlugCacheEntry? cachedRecord) || cachedRecord is null) {
+            return null;
+        }
+
+        return cachedRecord;
     }
 
     private static string GetKey(string identifier) => $"{CachePrefix}{identifier}";

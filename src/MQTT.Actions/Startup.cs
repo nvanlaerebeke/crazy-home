@@ -16,8 +16,10 @@ public static class Startup {
         services.AddSingleton<SensorCache>();
 
         //Background Services
+        services.AddHostedService<AutoRefreshService>();
         services.AddHostedService<EventListenerService>();
         services.AddHostedService<PlugService>();
+        services.AddHostedService<ReconnectService>();
 
         //Routing
         services.AddSingleton<BridgeInfoMessage>();

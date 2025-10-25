@@ -28,7 +28,7 @@ internal sealed class PlugMessage: IMessageRouter {
         if (plugStatus is null) {
             return Task.CompletedTask;
         }
-        
+        _logger.LogInformation("Received plug ({Id}) information", id);
         _plugCache.Set(plugStatus.ToDto(id));
         return Task.CompletedTask;
     }

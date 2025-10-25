@@ -26,8 +26,11 @@ internal sealed class SensorMessage: IMessageRouter  {
         
         var sensorStatus = JsonSerializer.Deserialize<Sensor>(payload);
         if (sensorStatus is null) {
+            _logger.LogError("Invalid sensor ({Identifier}) payload: {Payload}", topic, payload);
             return Task.CompletedTask;
         }
+        
+        _logger.LogInformation("Received sensor ({Id}) information", id);
         
         _sensorCache.Set(sensorStatus.ToDto(id));
         return Task.CompletedTask;

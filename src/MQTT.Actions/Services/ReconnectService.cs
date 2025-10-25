@@ -29,11 +29,14 @@ internal sealed class ReconnectService : BackgroundService {
             return;
         }
 
-        await _client.ConnectAsync();
-        if (!_client.IsConnected()) {
-           _logger.LogError("Reconnect failed"); 
-        } else {
-            _logger.LogInformation("Reconnect success");
+        while (!_client.IsConnected()) {
+            await _client.ConnectAsync();
+            await Task.Delay(1000);
+            if (!_client.IsConnected()) {
+                _logger.LogError("Reconnect failed");
+            } else {
+                _logger.LogInformation("Reconnect success");
+            }
         }
     }
 }
