@@ -10,8 +10,8 @@ internal sealed class AutoRefreshService : BackgroundService {
     private readonly SensorCache _sensorCache;
     private readonly MqttClient _client;
     private readonly ILogger<AutoRefreshService> _logger;
-    private readonly TimeSpan _checkInterval = TimeSpan.FromSeconds(5);
-    private readonly TimeSpan _expiryInterval = TimeSpan.FromSeconds(10);
+    private readonly TimeSpan _checkInterval = TimeSpan.FromSeconds(10);
+    private readonly TimeSpan _expiryInterval = TimeSpan.FromMinutes(10);
 
     public AutoRefreshService(
         PlugCache plugCache,
