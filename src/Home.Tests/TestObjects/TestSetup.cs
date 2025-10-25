@@ -8,7 +8,7 @@ internal class TestSetup : Startup {
         base.Start(builder);
     }
 
-    public override void ConfigureApp(WebApplication app) {
+    protected override void ConfigureApp(WebApplication app) {
         base.ConfigureApp(app);
     }
 }

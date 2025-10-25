@@ -26,16 +26,16 @@ public class PlugController : ControllerBase {
     public IActionResult Get() {
         var plugs = new List<CircleInfo>();
         var tasks = new List<Task>();
-        _settings.Plugs.Select(p => p).ToList().ForEach(plug => {
+        _settings.Plugwise.Plugs.Select(p => p).ToList().ForEach(plug => {
             tasks.Add(Task.Run(() => {
-                var usageResult = _plugService.Usage(plug.Mac);
-                var stateResult = _plugService.CircleInfo(plug.Mac);
+                var usageResult = _plugService.Usage(plug.Identifier);
+                var stateResult = _plugService.CircleInfo(plug.Identifier);
 
                 if (
                     !usageResult.IsSuccess ||
                     !stateResult.IsSuccess
                 ) {
-                    _logger.LogError("Unable to fetch usage or state for {Mac}", plug.Mac);
+                    _logger.LogError("Unable to fetch usage or state for {Mac}", plug.Identifier);
                     if (usageResult.IsFaulted) {
                         _logger.LogError("Error fetching usage: {Error}",
                             usageResult.Match(_ => string.Empty, ex => ex.Message));
@@ -71,19 +71,19 @@ public class PlugController : ControllerBase {
     [HttpGet("/[controller]/{mac}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CircleInfo))]
     public IActionResult Circle(string mac) {
-        var plug = _settings.Plugs.FirstOrDefault(p => p.Mac.Equals(mac));
+        var plug = _settings.Plugwise.Plugs.FirstOrDefault(p => p.Identifier.Equals(mac));
         if (plug is null) {
             return NotFound();
         }
 
-        var usageResult = _plugService.Usage(plug.Mac);
-        var stateResult = _plugService.CircleInfo(plug.Mac);
+        var usageResult = _plugService.Usage(plug.Identifier);
+        var stateResult = _plugService.CircleInfo(plug.Identifier);
 
         if (
             !usageResult.IsSuccess ||
             !stateResult.IsSuccess
         ) {
-            _logger.LogError("Unable to fetch usage or state for {Mac}", plug.Mac);
+            _logger.LogError("Unable to fetch usage or state for {Mac}", plug.Identifier);
             if (usageResult.IsFaulted) {
                 _logger.LogError("Error fetching usage: {Error}",
                     usageResult.Match(_ => string.Empty, ex => ex.Message));
@@ -104,7 +104,7 @@ public class PlugController : ControllerBase {
 
     [HttpPost("[action]/{mac}")]
     public IActionResult On(string mac) {
-        var plug = _settings.Plugs.FirstOrDefault(p => p.Mac.Equals(mac));
+        var plug = _settings.Plugwise.Plugs.FirstOrDefault(p => p.Identifier.Equals(mac));
         if (plug is null) {
             return NotFound();
         }
@@ -118,7 +118,7 @@ public class PlugController : ControllerBase {
 
     [HttpPost("[action]/{mac}")]
     public IActionResult Off(string mac) {
-        var plug = _settings.Plugs.FirstOrDefault(p => p.Mac.Equals(mac));
+        var plug = _settings.Plugwise.Plugs.FirstOrDefault(p => p.Identifier.Equals(mac));
         if (plug is null) {
             return NotFound();
         }
@@ -132,7 +132,7 @@ public class PlugController : ControllerBase {
 
     [HttpGet("[action]/{mac}")]
     public IActionResult Usage(string mac) {
-        if (!_settings.Plugs.Select(p => p.Mac).Contains(mac)) {
+        if (!_settings.Plugwise.Plugs.Select(p => p.Identifier).Contains(mac)) {
             return NotFound();
         }
 
@@ -142,7 +142,7 @@ public class PlugController : ControllerBase {
     [HttpGet("[action]/{mac}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Calibration))]
     public IActionResult Calibrate(string mac) {
-        var plug = _settings.Plugs.FirstOrDefault(p => p.Mac.Equals(mac));
+        var plug = _settings.Plugwise.Plugs.FirstOrDefault(p => p.Identifier.Equals(mac));
         if (plug is null) {
             return NotFound();
         }
@@ -157,7 +157,7 @@ public class PlugController : ControllerBase {
     [HttpPost("[action]/{mac}/{unixDStamp}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult SetDateTime(string mac, long unixDStamp) {
-        var plug = _settings.Plugs.FirstOrDefault(p => p.Mac.Equals(mac));
+        var plug = _settings.Plugwise.Plugs.FirstOrDefault(p => p.Identifier.Equals(mac));
         if (plug is null) {
             return NotFound();
         }

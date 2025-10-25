@@ -28,7 +28,7 @@ internal static class ToApiObjectExtensionMethods {
             Type = circleInfoResponse.Type,
             Usage = usage,
             Name = plug.Name,
-            Mac = plug.Mac,
+            Mac = plug.Identifier,
             AllowStateUpdate = plug.PowerControl
         };
     }

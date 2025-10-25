@@ -5,7 +5,7 @@ namespace Home.Api.Objects.Plugwise;
 
 public class PlugMetric {
     public PlugMetric(Plug plug, Usage usage) {
-        Mac = plug.Mac;
+        Mac = plug.Identifier;
         Name = plug.Name;
         AllowStateUpdate = plug.PowerControl;
         Usage = usage.PowerConsumption;

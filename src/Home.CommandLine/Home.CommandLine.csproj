@@ -15,6 +15,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\MQTT.Actions\MQTT.Actions.csproj" />
+        <ProjectReference Include="..\Plugwise.Actions\Plugwise.Actions.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,15 +1,9 @@
 ﻿namespace Home.Config;
 
 public class Plug {
-    public string Mac { get; }
-    public string Name { get; }
-    public bool PowerControl { get; }
-    public bool PowerUsage { get; }
-
-    public Plug(string mac, string name, bool powerControl, bool powerUsage) {
-        Mac = mac;
-        Name = name;
-        PowerControl = powerControl;
-        PowerUsage = powerUsage;
-    }
+    public required string Identifier { get; init; }
+    public required SourceType SourceType { get; init; }
+    public required string Name { get; init; }
+    public required bool PowerControl { get; init; }
+    public required bool PowerUsage { get; init; }
 }

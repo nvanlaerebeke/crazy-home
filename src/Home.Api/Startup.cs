@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Plugwise.Actions;
 using Home.Config;
+using MQTT.Actions;
 
 namespace Home.Api;
 
@@ -14,7 +15,7 @@ public class Startup {
         app.Run();
     }
 
-    public virtual void ConfigureApp(WebApplication app) {
+    protected virtual void ConfigureApp(WebApplication app) {
         //Configure Error Handler
         app.UseExceptionHandler("/Error");
         app.UseHsts();
@@ -40,6 +41,7 @@ public class Startup {
         //Initialize
         var settings = new SettingsProvider().Get();
         services.AddSingleton(settings);
-        services.AddActions(settings);
+        services.AddPlugwise(settings);
+        services.AddMqtt();
     }
 }

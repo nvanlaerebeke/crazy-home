@@ -1,73 +1,205 @@
-﻿using System.Text.Json;
+﻿using Home.Config;
+using Microsoft.Extensions.Logging;
 using MQTTnet;
 using MQTTnet.Formatter;
 
 namespace MQTT.Actions;
 
+/// <summary>
+/// The Mqtt client that connects to the Zigbee controller
+/// </summary>
 public sealed class MqttClient {
-    public async Task Connect() {
-        var factory = new MqttClientFactory();
-        var client = factory.CreateMqttClient();
+    private readonly ISettings _settings;
+    private readonly ILogger<MqttClient> _logger;
 
-        var options = new MqttClientOptionsBuilder()
-            .WithClientId("nico-dev-1")
-            .WithProtocolVersion(MqttProtocolVersion.V311)
-            .WithTcpServer("tcp://mqtt.crazyzone.be", 6638) // use 8883 + TLS if required
-            //.WithCredentials("user", "pass")
-            //.WithTlsOptions(o => o.UseTls())            // uncomment if using 8883
-            .WithKeepAlivePeriod(TimeSpan.FromSeconds(30))
-            .WithCleanSession()
-            .Build();
+    /// <summary>
+    /// Lock that makes sure only 1 connect and disconnect happens at a time
+    /// </summary>
+    private readonly SemaphoreSlim _lock = new(1, 1);
 
-        client.ConnectedAsync += e => {
-            Console.WriteLine($"Connected: {e.ConnectResult}");
-            return Task.CompletedTask;
-        };
-        client.DisconnectedAsync += e => {
-            Console.WriteLine($"Disconnected: {e.Reason}");
-            if (e.Exception != null) {
-                Console.WriteLine(e.Exception);
+    /// <summary>
+    /// List of functions called when a message is received
+    /// </summary>
+    private readonly List<Func<MqttApplicationMessageReceivedEventArgs, Task>> _onMessageReceivedActions = [];
+
+    /// <summary>
+    /// List of functions called when the client connects
+    /// </summary>
+    private readonly List<Func<MqttClientConnectedEventArgs, Task>> _onConnectedActions = [];
+
+    /// <summary>
+    /// List of functions called when the clients go to connecting state
+    /// </summary>
+    private readonly List<Func<MqttClientConnectingEventArgs, Task>> _onConnectingActions = [];
+
+    /// <summary>
+    /// List of functions called when the client disconnects
+    /// </summary>
+    private readonly List<Func<MqttClientDisconnectedEventArgs, Task>> _onDisconnectedActions = [];
+
+    /// <summary>
+    /// Internal Mqtt client
+    /// </summary>
+    private IMqttClient? _client;
+
+    public MqttClient(ISettings settings, ILogger<MqttClient> logger) {
+        _settings = settings;
+        _logger = logger;
+    }
+
+    /// <summary>
+    /// Connect to the MQTT service
+    /// </summary>
+    /// <exception cref="InvalidOperationException"></exception>
+    public async Task ConnectAsync() {
+        try {
+            await _lock.WaitAsync().ConfigureAwait(false);
+
+            if (_client != null) {
+                _logger.LogWarning("Already connected");
+                return;
             }
 
-            return Task.CompletedTask;
-        };
+            var factory = new MqttClientFactory();
+            _client = factory.CreateMqttClient();
 
-        await client.ConnectAsync(options);
+            _client.ConnectedAsync += OnConnectedAsync;
+            _client.ConnectingAsync += OnConnectingAsync;
+            _client.DisconnectedAsync += OnDisconnectedAsync;
+            _client.ApplicationMessageReceivedAsync += OnMessageReceivedAsync;
 
-        // Example when using Zigbee2MQTT
-        await client.SubscribeAsync("zigbee2mqtt/#");
-        await Task.Delay(Timeout.Infinite); // keep running
+            await _client.ConnectAsync(new MqttClientOptionsBuilder()
+                .WithClientId(_settings.Mqtt.ClientName)
+                .WithProtocolVersion(MqttProtocolVersion.V500)
+                .WithTcpServer(_settings.Mqtt.Broker, _settings.Mqtt.Port)
+                .WithKeepAlivePeriod(TimeSpan.FromSeconds(30))
+                .WithCleanSession()
+                .Build()
+            );
+            await _client.SubscribeAsync("zigbee2mqtt/#");
+        }
+        finally {
+            _lock.Release();
+        }
     }
 
-    public static async Task Clean_Disconnect() {
-        /*
-         * This sample disconnects in a clean way. This will send a MQTT DISCONNECT packet
-         * to the server and close the connection afterward.
-         *
-         * See sample _Connect_Client_ for more details.
-         */
-
-        var mqttFactory = new MqttClientFactory();
-
-        using var mqttClient = mqttFactory.CreateMqttClient();
-        var mqttClientOptions = new MqttClientOptionsBuilder().WithTcpServer("broker.hivemq.com").Build();
-        await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
-
-        // This will send the DISCONNECT packet. Calling _Dispose_ without DisconnectAsync the
-        // connection is closed in a "not clean" way. See MQTT specification for more details.
-        await mqttClient.DisconnectAsync(new MqttClientDisconnectOptionsBuilder()
-            .WithReason(MqttClientDisconnectOptionsReason.NormalDisconnection).Build());
+    /// <summary>
+    /// Method called when the client goes into the connecting state
+    /// </summary>
+    /// <param name="arg"></param>
+    private async Task OnConnectingAsync(MqttClientConnectingEventArgs arg) {
+        foreach (var action in _onConnectingActions) {
+            await action(arg);
+        }
     }
-}
 
-internal static class ObjectExtensions {
-    public static TObject DumpToConsole<TObject>(this TObject @object) {
-        var output = "NULL";
-        if (@object != null) {
-            output = JsonSerializer.Serialize(@object, new JsonSerializerOptions { WriteIndented = true });
+    /// <summary>
+    /// Method called when a new message is added to the queue
+    /// </summary>
+    /// <param name="e"></param>
+    /// <returns></returns>
+    private async Task OnMessageReceivedAsync(MqttApplicationMessageReceivedEventArgs e) {
+        foreach (var onMessageReceivedAction in _onMessageReceivedActions) {
+            await onMessageReceivedAction(e);
+        }
+    }
+
+    /// <summary>
+    /// Method called when the client disconnects
+    /// </summary>
+    /// <param name="e"></param>
+    /// <returns></returns>
+    private async Task OnDisconnectedAsync(MqttClientDisconnectedEventArgs e) {
+        if (_client is null) {
+            _logger.LogWarning("Already Disconnected");
+            return;
         }
 
-        Console.WriteLine($"[{@object?.GetType().Name}]:\r\n{output}");
-        return @object;
+        _client.ConnectedAsync -= OnConnectedAsync;
+        _client.DisconnectedAsync -= OnDisconnectedAsync;
+        _client.ApplicationMessageReceivedAsync -= OnMessageReceivedAsync;
+
+        _onConnectedActions.Clear();
+        _onConnectingActions.Clear();
+        _onDisconnectedActions.Clear();
+        _onMessageReceivedActions.Clear();
+
+        if (e.Exception is not null) {
+            _logger.LogError(e.Exception, "Disconnected: {Reason}", e.Reason);
+        } else {
+            _logger.LogInformation("Disconnected: {Reason}", e.Reason);
+        }
+        
+        foreach (var action in _onDisconnectedActions) {
+            await action(e);
+        }
     }
+
+    /// <summary>
+    /// Method called when the client goes into the connecting state
+    /// </summary>
+    /// <param name="e"></param>
+    /// <returns></returns>
+    private async Task OnConnectedAsync(MqttClientConnectedEventArgs e) {
+        _logger.LogInformation("Connected: {Result}", e.ConnectResult);
+        
+        foreach (var action in _onConnectedActions) {
+            await action(e);
+        }
+    }
+
+    /// <summary>
+    /// Cleanly disconnects the client
+    /// </summary>
+    public async Task DisconnectAsync() {
+        try {
+            await _lock.WaitAsync().ConfigureAwait(false);
+            if (_client is null) {
+                return;
+            }
+
+            await _client
+                .DisconnectAsync(
+                    new MqttClientDisconnectOptionsBuilder()
+                        .WithReason(MqttClientDisconnectOptionsReason.NormalDisconnection).Build()
+                );
+        }
+        finally {
+            _lock.Release();
+        }
+    }
+
+    /// <summary>
+    /// Adds a function to be called when the client connects
+    /// </summary>
+    /// <param name="action"></param>
+    public void OnConnected(Func<MqttClientConnectedEventArgs, Task> action) {
+        _onConnectedActions.Add(action);
+    }
+
+    /// <summary>
+    /// Add a function to be called when the client disconnects
+    /// </summary>
+    /// <param name="action"></param>
+    public void OnDisconnected(Func<MqttClientDisconnectedEventArgs, Task> action) {
+        _onDisconnectedActions.Add(action);
+    }
+
+    /// <summary>
+    /// Adds a function to be called when the client receives a message
+    /// </summary>
+    /// <param name="action"></param>
+    public void OnMessageReceived(Func<MqttApplicationMessageReceivedEventArgs, Task> action) {
+        _onMessageReceivedActions.Add(action);
+    }
+
+    /// <summary>
+    /// Add a function to be called when the client goes to the connecting state
+    /// </summary>
+    /// <param name="action"></param>
+    public void OnConnecting(Func<MqttClientConnectingEventArgs, Task> action) {
+        _onConnectingActions.Add(action);
+    }
+
+    public bool IsConnected() => _client is not null;
 }

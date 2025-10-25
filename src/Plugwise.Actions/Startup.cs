@@ -5,12 +5,12 @@ using PlugwiseControl;
 namespace Plugwise.Actions;
 
 public static class Startup {
-    public static void AddActions(this IServiceCollection serviceCollection, ISettings settings) {
+    public static void AddPlugwise(this IServiceCollection serviceCollection, ISettings settings) {
         serviceCollection.AddSingleton<IPlugService, PlugService>();
-        serviceCollection.AddPlugwise(settings.SerialPort);
+        serviceCollection.AddPlugwise(settings.Plugwise.SerialPort);
 
-        if (settings.PlugwiseBackgroundCaching) {
-            serviceCollection.AddPlugwiseCache(settings.Plugs.Select(p => p.Mac).ToList());
+        if (settings.Plugwise.BackgroundCaching) {
+            serviceCollection.AddPlugwiseCache(settings.Plugwise.Plugs.Select(p => p.Identifier).ToList());
         }
     }
 }

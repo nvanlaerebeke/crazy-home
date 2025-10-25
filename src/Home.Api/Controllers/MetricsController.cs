@@ -24,14 +24,14 @@ public class MetricsController : ControllerBase {
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Metrics))]
     public IActionResult Get() {
         var plugs = new List<PlugMetric>();
-        _settings.Plugs.Select(p => p).ToList().ForEach(plug => {
-            _ = _plugService.Usage(plug.Mac).Match(
+        _settings.Plugwise.Plugs.Select(p => p).ToList().ForEach(plug => {
+            _ = _plugService.Usage(plug.Identifier).Match(
                 u => {
                     plugs.Add(new PlugMetric(plug, new Usage(u, "Wh")));
                     return true;
                 },
                 ex => {
-                    _logger.LogError("Unable to fetch usage for {Mac}: {Error}", plug.Mac, ex.Message);
+                    _logger.LogError("Unable to fetch usage for {Mac}: {Error}", plug.Identifier, ex.Message);
                     return false;
                 }
             );
