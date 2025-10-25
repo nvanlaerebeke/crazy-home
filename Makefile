@@ -65,3 +65,12 @@ template:
 		--set hostnames={home.crazyzone.be} \
 		--set global.imagePullSecrets={"myImagePullSecret"} \
 		${PROJECT_LOWER} ./chart
+
+#
+# Backing services
+#
+docker-up:
+	mkdir -p ./data/mosquitto/config ./data/zigbee/
+	/bin/cp -f ./etc/mosquitto-config.conf ./data/mosquitto/config/mosquitto.conf
+	/bin/cp -f ./etc/zigbee-config.yaml ./data/zigbee/configuration.yaml
+	docker compose up -d
