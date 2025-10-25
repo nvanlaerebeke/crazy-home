@@ -1,5 +1,6 @@
 ﻿using LanguageExt.Common;
 using Microsoft.Extensions.DependencyInjection;
+using MQTT.Actions.Actions;
 using MQTT.Actions.Actions.Sensor;
 using MQTT.Actions.Objects;
 
@@ -11,7 +12,7 @@ internal class MqttSensorActions : IMqttSensorActions {
     public MqttSensorActions(IServiceProvider provider) {
         _provider = provider;
     }
-    
+
     public async Task<Result<List<SensorDto>>> GetAllAsync() {
         try {
             return await _provider.GetRequiredService<GetAll>().ExecuteAsync();
@@ -25,6 +26,14 @@ internal class MqttSensorActions : IMqttSensorActions {
             return await _provider.GetRequiredService<GetSensorStatus>().ExecuteAsync(id);
         } catch (Exception ex) {
             return new Result<SensorDto?>(ex);
+        }
+    }
+
+    public async Task<Result<bool>> PermitJoiningAsync() {
+        try {
+            return await _provider.GetRequiredService<PermitJoining>().ExecuteAsync();
+        } catch (Exception ex) {
+            return new Result<bool>(ex);
         }
     }
 }

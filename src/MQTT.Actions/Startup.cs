@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using MQTT.Actions.Actions;
 using MQTT.Actions.Cache;
 using MQTT.Actions.Message;
 using MQTT.Actions.Message.Handlers;
@@ -33,6 +34,8 @@ public static class Startup {
         services.AddSingleton<IMqttPlugActions, MqttPlugActions>();
         services.AddSingleton<IMqttSensorActions, MqttSensorActions>();
 
+        services.AddSingleton<PermitJoining>();
+        
         services.AddTransient<Actions.Plug.GetAll>();
         services.AddTransient<Actions.Plug.GetPlugStatus>();
         services.AddTransient<Actions.Plug.SetState>();
