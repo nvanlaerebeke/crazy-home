@@ -4,32 +4,34 @@ using Home.Shared;
 using Microsoft.Extensions.Logging;
 using MQTT.Actions.Cache;
 using MQTT.Actions.Message;
-using MQTT.Actions.Message.Request;
 using MQTT.Actions.Objects.ExtensionMethods;
 using MQTTnet;
 
 namespace MQTT.Actions.Actions.Plug;
 
-internal sealed class On {
+internal sealed class SetState {
     private readonly MqttClient _client;
     private readonly PlugCache _cache;
-    private readonly ILogger<On> _logger;
+    private readonly ILogger<SetState> _logger;
 
     private CancellationTokenSource? _cancellationTokenSource;
     private string? _identifier;
-
-    public On(MqttClient client, PlugCache cache, ILogger<On> logger) {
+    private SwitchState? _switchState;
+    
+    public SetState(MqttClient client, PlugCache cache, ILogger<SetState> logger) {
         _client = client;
         _cache = cache;
         _logger = logger;
     }
 
-    public async Task<bool> ExecuteAsync(string identifier) {
+    public async Task<bool> ExecuteAsync(string identifier, SwitchState switchState) {
         if (_identifier is not null || _cancellationTokenSource is not null) {
             throw new InvalidOperationException("Action was already executed");
         }
 
         _identifier = identifier;
+        _switchState = switchState;
+        
         var tcs = new TaskCompletionSource();
         _cancellationTokenSource = new CancellationTokenSource();
 
@@ -38,7 +40,7 @@ internal sealed class On {
             _client.OnMessageReceived(CheckStateChanged);
 
             //Send the request to set the state
-            await _client.SendAsync(new SetState(identifier, SwitchState.On));
+            await _client.SendAsync(new Message.Request.SetState(identifier, switchState));
 
             //Wait a maximum of 10 seconds or a confirmation that the state was changed
             _cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(10));
@@ -48,7 +50,7 @@ internal sealed class On {
             await tcs.Task;
 
             //Check if the status was set correctly
-            return _cache.Get(identifier)?.SwitchState is SwitchState.On;
+            return _cache.Get(identifier)?.SwitchState == switchState;
         } catch (OperationCanceledException) {
             _logger.LogError("OperationCanceledException");
         } finally {
@@ -60,7 +62,7 @@ internal sealed class On {
 
     private Task CheckStateChanged(MqttApplicationMessageReceivedEventArgs eventArgs) {
         //Check
-        if (_identifier is null || _cancellationTokenSource is null) {
+        if (_identifier is null || _switchState is null || _cancellationTokenSource is null) {
             throw new InvalidOperationException("Invalid State");
         }
 
@@ -77,7 +79,7 @@ internal sealed class On {
         }
 
         //Plug state was not changed to ON yet
-        if (plugStatus.State.Equals("ON", StringComparison.CurrentCultureIgnoreCase)) {
+        if (!plugStatus.State.Equals(_switchState.ToString(), StringComparison.CurrentCultureIgnoreCase)) {
             return Task.CompletedTask;
         }
 

@@ -33,8 +33,7 @@ public static class Startup {
 
         services.AddTransient<Actions.Plug.GetAll>();
         services.AddTransient<Actions.Plug.GetPlugStatus>();
-        services.AddTransient<Actions.Plug.Off>();
-        services.AddTransient<Actions.Plug.On>();
+        services.AddTransient<Actions.Plug.SetState>();
 
         services.AddTransient<Actions.Sensor.GetAll>();
         services.AddTransient<Actions.Sensor.GetSensorStatus>();

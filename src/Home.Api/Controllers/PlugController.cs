@@ -1,6 +1,7 @@
 using Home.Api.ExtensionMethods;
 using Home.Api.Objects.Mqtt;
 using Home.Api.Objects.Mqtt.ExtensionMethods;
+using Home.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MQTT.Actions;
@@ -34,13 +35,13 @@ public class PlugController : ControllerBase {
 
     [HttpPost("[action]/{identifier}")]
     public async Task<IActionResult> On(string identifier) {
-        var result = await _plugActions.SetOnAsync(identifier);
+        var result = await _plugActions.SetStateAsync(identifier, SwitchState.On);
         return result.ToOk(_ => Ok());
     }
 
     [HttpPost("[action]/{identifier}")]
     public async Task<IActionResult> Off(string identifier) {
-        var result = await _plugActions.SetOffAsync(identifier);
+        var result = await _plugActions.SetStateAsync(identifier, SwitchState.Off);
         return result.ToOk(_ => Ok());
     }
 }

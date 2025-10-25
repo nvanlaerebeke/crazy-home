@@ -1,4 +1,5 @@
-﻿using LanguageExt.Common;
+﻿using Home.Shared;
+using LanguageExt.Common;
 using Microsoft.Extensions.DependencyInjection;
 using MQTT.Actions.Actions.Plug;
 using MQTT.Actions.Objects;
@@ -20,17 +21,9 @@ internal class MqttPlugActions : IMqttPlugActions {
         }
     }
 
-    public async Task<Result<bool>> SetOnAsync(string id) {
+    public async Task<Result<bool>> SetStateAsync(string id, SwitchState switchState) {
         try {
-            return await _provider.GetRequiredService<On>().ExecuteAsync(id);
-        } catch (Exception ex) {
-            return new Result<bool>(ex);
-        }
-    }
-
-    public async Task<Result<bool>> SetOffAsync(string id) {
-        try {
-            return await _provider.GetRequiredService<Off>().ExecuteAsync();
+            return await _provider.GetRequiredService<SetState>().ExecuteAsync(id, switchState);
         } catch (Exception ex) {
             return new Result<bool>(ex);
         }
