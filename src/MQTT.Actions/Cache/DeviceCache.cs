@@ -57,6 +57,20 @@ internal sealed class DeviceCache {
 
         _memoryCache.Set(GetKey(), deviceList);
     }
+    
+    public void UpdateDevice(Device device) {
+        if (!_memoryCache.TryGetValue(GetKey(), out List<DeviceCacheEntry>? devices) || devices == null) {
+            return;
+        }
+
+        for (int i = 0; i < devices.Count; i++) {
+            if (devices[i].Device.IeeeAddress != device.IeeeAddress) {
+                continue;
+            }
+            devices[i] = new DeviceCacheEntry(devices[i].Type, device);
+        }
+        _memoryCache.Set(GetKey(), devices);
+    }
 
     private async Task<Device> AddToDbAsync(DeviceType deviceType, string ieeeAddress, string friendlyName) {
         await using var work = await _dbContextFactory.GetAsync();
