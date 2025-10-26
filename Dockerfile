@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
 WORKDIR /app
 
 COPY ./src ./
@@ -6,7 +6,7 @@ RUN dotnet publish -c Release -o /build -r linux-x64  /p:DebugSymbols=false /p:D
 
 
 # Build runtime image
-FROM  mcr.microsoft.com/dotnet/aspnet:8.0
+FROM  mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 EXPOSE 8080
 
