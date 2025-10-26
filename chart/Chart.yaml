@@ -10,7 +10,7 @@ dependencies:
     condition: mqtt.enabled
     version: 2.6.1
     repository: https://charts.ar80.eu
-  # https://github.com/Koenkk/zigbee2mqtt-chart/tree/main/charts/zigbee2mqtt
+  # https://github.com/Koenkk/zigbee  2mqtt-chart/tree/main/charts/zigbee2mqtt
   - name: zigbee2mqtt
     condition: mqtt.enabled
     version: 2.6.2
