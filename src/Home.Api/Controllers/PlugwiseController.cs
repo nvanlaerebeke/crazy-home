@@ -22,7 +22,7 @@ public class PlugwiseController : ControllerBase {
         _logger = logger;
     }
 
-    [HttpGet("[action]")]
+    [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<CircleInfo>))]
     public IActionResult Get() {
         var plugs = new List<CircleInfo>();
