@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Plugwise.Actions;
 using Home.Config;
@@ -31,7 +32,11 @@ public class Startup {
 
     public void ConfigureServices(IServiceCollection services) {
         // Add services to the container.
-        services.AddControllers();
+        services.AddControllers().AddJsonOptions(o => {
+            // serializes enums as strings; also affects swagger model binding in JSON bodies
+            o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(allowIntegerValues: false));
+        });
+
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         services.AddEndpointsApiExplorer();

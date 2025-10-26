@@ -18,4 +18,13 @@ public sealed class Device : Entity{
     [Column("friendly_name")]
     [MaxLength(30)]
     public string FriendlyName { get; set; } = string.Empty;
+    
+    [Required(AllowEmptyStrings = false)]
+    [Column("power_on_behavior")]
+    [MaxLength(3)]
+    public SwitchState PowerOnBehavior { get; set; } = SwitchState.On;
+
+    [Required]
+    [Column("allow_switch_state")]
+    public bool AllowStateChange { get; set; } = true;
 }

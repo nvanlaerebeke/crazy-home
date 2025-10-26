@@ -3,18 +3,18 @@ using Home.Db;
 
 namespace MQTT.Actions.Message.Request;
 
-internal sealed class SetState : IMqttRequest {
+internal sealed class SetPowerOnBehavior : IMqttRequest {
     private readonly string _id;
     private readonly SwitchState _switchState;
 
-    public SetState(string id, SwitchState switchState) {
+    public SetPowerOnBehavior(string id, SwitchState switchState) {
         _id = id;
         _switchState = switchState;
     }
 
     public override string ToString() {
         var switchState = _switchState == SwitchState.On;
-        var payload = JsonSerializer.Serialize(new { state = switchState ? "ON" : "OFF" });
+        var payload = JsonSerializer.Serialize(new { power_on_behavior = switchState ? "on" : "off" });
         return payload;
     }
 

@@ -28,6 +28,7 @@ public class HomeDbContext : DbContext {
             e.Property(x => x.FriendlyName).UseCollation("NOCASE");
 
             e.Property(x => x.DeviceType).HasConversion<string>();
+            e.Property(x => x.PowerOnBehavior).HasConversion<string>();
         });
     }
 

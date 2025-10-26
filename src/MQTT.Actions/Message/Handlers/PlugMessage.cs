@@ -18,6 +18,7 @@ internal sealed class PlugMessage: IMessageRouter {
     }
     
     public Task RouteAsync(string topic, string payload) {
+        _logger.LogInformation("Received plug message with topic {Topic}", topic);
         var device = _deviceCache.GetAll(DeviceType.Plug).FirstOrDefault(x => topic.EndsWith(x.IeeeAddress));
         if (device is null) {
             _logger.LogError("Trying to add plug status for unknown device: {DeviceId}", topic);

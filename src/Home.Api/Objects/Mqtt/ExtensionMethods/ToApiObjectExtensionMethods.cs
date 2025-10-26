@@ -12,7 +12,9 @@ internal static class ToApiObjectExtensionMethods {
             Current = plugStatus.Current,
             Voltage = plugStatus.Voltage,
             PowerFactor = plugStatus.PowerFactor,
-            Unit = "W"
+            Unit = "W",
+            AllowStateChange = plugStatus.AllowStateChange,
+            PowerOnBehavior = plugStatus.PowerOnBehavior
         };
     }
 

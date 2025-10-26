@@ -38,14 +38,6 @@ internal sealed class PlugCache {
         _memoryCache.Set(GetKey(plugStatus.Id), new PlugCacheEntry(plugStatus.Id, plugStatus, DateTime.Now), _cacheDuration);
     }
 
-    public void Invalidate(string identifier) {
-        if (!_memoryCache.TryGetValue(GetKey(identifier), out PlugCacheEntry? cachedRecord) || cachedRecord is null) {
-            return;
-        }
-
-        _memoryCache.Remove(cachedRecord);
-    }
-
     private PlugCacheEntry? GetCacheEntry(string id) {
         if (!_memoryCache.TryGetValue(GetKey(id), out PlugCacheEntry? cachedRecord) || cachedRecord is null) {
             return null;

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Home.Shared;
+using Home.Db;
 
 namespace Home.Api.Objects.Plugwise;
 

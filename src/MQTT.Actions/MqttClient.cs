@@ -90,7 +90,11 @@ internal sealed class MqttClient {
     /// <param name="arg"></param>
     private async Task OnConnectingAsync(MqttClientConnectingEventArgs arg) {
         foreach (var action in _onConnectingActions) {
-            await action(arg);
+            try {
+                await action(arg);
+            } catch (Exception ex) {
+                _logger.LogError(ex, "Error while connecting");
+            }
         }
     }
 
@@ -101,7 +105,11 @@ internal sealed class MqttClient {
     /// <returns></returns>
     private async Task OnMessageReceivedAsync(MqttApplicationMessageReceivedEventArgs e) {
         foreach (var onMessageReceivedAction in _onMessageReceivedActions) {
-            await onMessageReceivedAction(e);
+            try {
+                await onMessageReceivedAction(e);
+            } catch (Exception ex) {
+                _logger.LogError(ex, "Error while receiving message");
+            }
         }
     }
 
@@ -135,7 +143,11 @@ internal sealed class MqttClient {
         _client = null;
         
         foreach (var action in _onDisconnectedActions) {
-            await action(eventArgs);
+            try {
+                await action(eventArgs);
+            } catch (Exception ex) {
+                _logger.LogError(ex, "Error while disconnecting");
+            }
         }
     }
 
@@ -148,7 +160,11 @@ internal sealed class MqttClient {
         _logger.LogInformation("Connected: {Result}", e.ConnectResult);
 
         foreach (var action in _onConnectedActions) {
-            await action(e);
+            try {
+                await action(e);
+            } catch (Exception ex) {
+                _logger.LogError(ex, "Error while connecting");
+            }
         }
     }
 

@@ -1,5 +1,5 @@
-﻿using Home.Db.Model;
-using Home.Shared;
+﻿using Home.Db;
+using Home.Db.Model;
 using MQTT.Actions.Message;
 
 namespace MQTT.Actions.Objects.ExtensionMethods;
@@ -10,6 +10,10 @@ internal static class PlugStatusExtensionMethods {
             ? SwitchState.Off
             : SwitchState.On;
 
+        var powerOnBehaviour = plugStatus.PowerOnBehavior.Equals("on", StringComparison.InvariantCultureIgnoreCase)
+            ? SwitchState.On
+            : SwitchState.Off;
+        
         return new() {
             Id = device.IeeeAddress,
             Name = device.FriendlyName,
@@ -17,6 +21,8 @@ internal static class PlugStatusExtensionMethods {
             Usage = switchStatus == SwitchState.Off ? 0 : plugStatus.Power,
             Current = plugStatus.Current,
             Voltage = plugStatus.Voltage,
+            AllowStateChange = device.AllowStateChange,
+            PowerOnBehavior = powerOnBehaviour
         };
     }
 }
