@@ -4,7 +4,7 @@ internal sealed class Mqtt : IMqtt {
     public string Broker {
         get {
             var envVar = Environment.GetEnvironmentVariable("MQTT_BROKER");
-            return string.IsNullOrEmpty(envVar) ? "localhost" : envVar;
+            return string.IsNullOrEmpty(envVar) ? "tcp://localhost" : envVar;
         }
     }
 
@@ -21,5 +21,12 @@ internal sealed class Mqtt : IMqtt {
 
     public List<string> PlugModelIds => ["S60ZBTPF"];
     public List<string> SensorModelIds => ["SNZB-02P"];
-    public string ClientName => "home-controller";
+
+    public string ClientName {
+        get {
+            var envVar = Environment.GetEnvironmentVariable("MQTT_CLIENT_NAME");
+            return string.IsNullOrEmpty(envVar) ? Environment.MachineName : envVar;
+        }
+    }
+
 }

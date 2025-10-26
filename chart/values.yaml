@@ -3,7 +3,7 @@ global:
   image: home
   tag: 1.0.0
   #Use an existing secret for your registry
-  #existingRegisrySecret: ""
+  #existingRegistrySecret: ""
 plugwise:
   enabled: false
   device:

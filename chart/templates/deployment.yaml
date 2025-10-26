@@ -2,35 +2,35 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ $.Chart.Name }}
-  name:  {{ $.Chart.Name }}
+    app: {{ $.Chart.Name | lower }}
+  annotations:
+    #restart when the config map changes
+    checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+  name:  {{ $.Chart.Name | lower }}
 spec:
   replicas:  {{ $.Values.resources.replicaCount }}
   selector:
     matchLabels:
-      app:  {{ $.Chart.Name }}
+      app:  {{ $.Chart.Name | lower }}
   template:
     metadata:
       labels:
-        app:  {{ $.Chart.Name }}
+        app:  {{ $.Chart.Name | lower }}
     spec:
       containers:
       - image: "{{ .Values.global.registry }}/{{ .Values.global.image }}:{{ .Values.global.tag }}"
-        name:  {{ $.Chart.Name }}
+        name:  {{ $.Chart.Name | lower }}
         volumeMounts:
         - mountPath: {{ $.Values.plugwise.device.path }}
           name: dev-usb0
         securityContext:
           privileged: true
         envFrom:
-          - configMapRef:
-              name: crazy-home-configmap
-        env:
-          - name: PLUGWISE_SERIAL_PORT
-            value: {{ $.Values.plugwise.device.path }}  
+        - configMapRef:
+            name: crazy-home-configmap
         ports:
         - containerPort: 8080
-          name: {{ $.Chart.Name }}
+          name: {{ $.Chart.Name | lower | trunc 15 }}
         readinessProbe:
           httpGet:
             scheme: HTTP
@@ -41,8 +41,8 @@ spec:
       volumes:
       - name: dev-usb0
         hostPath:
-          path: {{ $.Values.plugwise.device.path }}
-{{- if $.Values.global.existingRegisrySecret }}          
+          path: {{ $.Values.plugwise.device.path | quote }}
+{{- if $.Values.global.existingRegistrySecret }}          
       imagePullSecrets:
-        - name: {{ $.Values.global.existingRegisrySecret }}
+        - name: {{ $.Values.global.existingRegistrySecret }}
 {{ end }}

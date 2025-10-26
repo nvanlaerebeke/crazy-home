@@ -8,7 +8,8 @@
       "applicationUrl": "http://0.0.0.0:4002",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "PLUGWISE_SERIAL_PORT_": "/dev/ttyUSB0"
+        "PLUGWISE_SERIAL_PORT_": "/dev/ttyUSB0",
+        "MQTT_BROKER": "192.168.5.5"
       }
     },
     "Cli": {
@@ -16,7 +17,8 @@
       "commandLineArgs": "Test",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "PLUGWISE_SERIAL_PORT_": "/dev/ttyUSB0"
+        "PLUGWISE_SERIAL_PORT_": "/dev/ttyUSB0",
+        "MQTT_BROKER": "192.168.5.5"
       }
     }
   }
