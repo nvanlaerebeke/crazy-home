@@ -24,7 +24,6 @@ public static class Startup {
         //Background Services
         services.AddHostedService<AutoRefreshService>();
         services.AddHostedService<EventListenerService>();
-        services.AddHostedService<PlugService>();
         services.AddHostedService<ReconnectService>();
 
         //Routing

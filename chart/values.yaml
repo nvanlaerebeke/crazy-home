@@ -4,17 +4,12 @@ global:
   tag: 1.0.0
   #Use an existing secret for your registry
   #existingRegisrySecret: ""
-mqtt:
-  enabled: true
-
 plugwise:
   enabled: false
   device:
     path: /dev/ttyUSB0
-
 resources:
   replicaCount: 1
-
 ingress:
   # If true, the ingress will be created.
   enabled: false
@@ -43,7 +38,25 @@ ingress:
   #     - docs.example.com
   #     secretName: docs-tls
   tls: []
+mqtt:
+  enabled: true
+  broker: "localhost"
+  port: 1883
 mosquitto:
   enabled: true
+  persistence:
+    enabled: false
+    existingClaim: ""
 zigbee2mqtt:
   enabled: true
+  zigbee2mqtt:
+    homeassistant:
+      enabled: false
+    timezone: CET
+    mqtt:
+      server: "mqtt://mosquitto:1883"
+    serial:
+      port: "tcp://zigbee.crazyzone.be:6638"
+    frontend:
+      enabled: true
+      port: 8080

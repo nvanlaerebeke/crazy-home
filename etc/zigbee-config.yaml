@@ -28,10 +28,6 @@ frontend:
   enabled: true
   port: 8080
 homeassistant:
-  enabled: true
+  enabled: false
 version: 4
-devices:
-  '0xf4b3b1fffe520b84':
-    friendly_name: '0xf4b3b1fffe520b84'
-  '0xa4c13801e816ffff':
-    friendly_name: '0xa4c13801e816ffff'
+

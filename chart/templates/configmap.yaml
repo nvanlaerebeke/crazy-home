@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crazy-home-configmap
+data:
+  MQTT_BROKER: {{ .Values.mqtt.broker | quote }}
+  MQTT_PORT: {{ .Values.mqtt.port | quote }}
