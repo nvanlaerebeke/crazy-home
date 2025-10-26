@@ -5,8 +5,8 @@ namespace Home.Api.Objects.Mqtt.ExtensionMethods;
 internal static class ToApiObjectExtensionMethods {
     public static PlugStatus ToApiObject(this PlugStatusDto plugStatus) {
         return new() {
-            Identifier = plugStatus.Identifier,
-            Name = plugStatus.Identifier,
+            Identifier = plugStatus.Id,
+            Name = plugStatus.Name,
             SwitchState = plugStatus.SwitchState,
             Usage = plugStatus.Usage,
             Current = plugStatus.Current,
@@ -19,6 +19,7 @@ internal static class ToApiObjectExtensionMethods {
     public static SensorStatus ToApiObject(this SensorDto sensorDto) {
         return new() {
             Id = sensorDto.Id,
+            Name = sensorDto.Name,
             Battery = sensorDto.Battery,
             Humidity = sensorDto.Humidity,
             Temperature = sensorDto.Temperature,

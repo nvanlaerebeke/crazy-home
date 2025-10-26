@@ -4,11 +4,17 @@ global:
   tag: 1.0.0
   #Use an existing secret for your registry
   #existingRegisrySecret: ""
+mqtt:
+  enabled: true
+
 plugwise:
+  enabled: false
   device:
     path: /dev/ttyUSB0
+
 resources:
   replicaCount: 1
+
 ingress:
   # If true, the ingress will be created.
   enabled: false
@@ -37,3 +43,7 @@ ingress:
   #     - docs.example.com
   #     secretName: docs-tls
   tls: []
+mosquitto:
+  enabled: true
+zigbee2mqtt:
+  enabled: true

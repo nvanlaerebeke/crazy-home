@@ -15,7 +15,7 @@ public class MqttController : ControllerBase {
         _plugActions = plugActions;
     }
 
-    [HttpGet]
+    [HttpGet("[action]")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<SensorStatus>))]
     public async Task<IActionResult> PermitJoining() {
         var result = await _plugActions.PermitJoiningAsync();

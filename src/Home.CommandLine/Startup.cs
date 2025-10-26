@@ -9,9 +9,10 @@ namespace Home.CommandLine;
 
 public static class Startup {
     public static IServiceCollection AddSettings(this IServiceCollection services) {
-        services.AddSingleton(new SettingsProvider().Get());
-        
-        services.AddMqtt();
+        var settings = new SettingsProvider().Get();
+        services.AddSingleton(settings);
+
+        services.AddMqtt(settings);
         services.AddPlugwise(new SettingsProvider().Get());
 
         return services;

@@ -1,0 +1,9 @@
+dependencies:
+- name: mosquitto
+  repository: https://charts.ar80.eu
+  version: 2.6.1
+- name: zigbee2mqtt
+  repository: https://charts.zigbee2mqtt.io
+  version: 2.6.2
+digest: sha256:3a233e8e66a1b98bcd3c6c701bcd6b72fb5229bd46ad35882c07562184f2d6cb
+generated: "2025-10-25T23:22:37.628886845+02:00"

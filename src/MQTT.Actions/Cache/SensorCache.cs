@@ -1,3 +1,4 @@
+using Home.Db;
 using Microsoft.Extensions.Caching.Memory;
 using MQTT.Actions.Objects;
 
@@ -18,7 +19,7 @@ internal sealed class SensorCache {
     }
 
     public List<SensorDto> GetAll() {
-        return _deviceCache.GetAll(DeviceType.Sensor).Select(Get).OfType<SensorDto>().ToList();
+        return _deviceCache.GetAll(DeviceType.Sensor).Select(x => Get(x.IeeeAddress)).OfType<SensorDto>().ToList();
     }
 
     public SensorDto? Get(string identifier) {
@@ -30,7 +31,11 @@ internal sealed class SensorCache {
     }
 
     public List<SensorCacheEntry> GetCacheEntries() {
-        return _deviceCache.GetAll(DeviceType.Plug).Select(GetCacheEntry).OfType<SensorCacheEntry>().ToList();
+        return _deviceCache
+            .GetAll(DeviceType.Plug)
+            .Select(x => GetCacheEntry(x.IeeeAddress))
+            .OfType<SensorCacheEntry>()
+            .ToList();
     }
 
     public void Set(SensorDto sensorStatus) {

@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
+using Home.Db;
 using Microsoft.Extensions.Logging;
 using MQTT.Actions.Cache;
-using MQTT.Actions.Objects;
 using MQTT.Actions.Objects.ExtensionMethods;
 
 namespace MQTT.Actions.Message.Handlers;
@@ -18,8 +18,8 @@ internal sealed class PlugMessage: IMessageRouter {
     }
     
     public Task RouteAsync(string topic, string payload) {
-        var id = _deviceCache.GetAll(DeviceType.Plug).FirstOrDefault(topic.EndsWith);
-        if (string.IsNullOrEmpty(id)) {
+        var device = _deviceCache.GetAll(DeviceType.Plug).FirstOrDefault(x => topic.EndsWith(x.IeeeAddress));
+        if (device is null) {
             _logger.LogError("Trying to add plug status for unknown device: {DeviceId}", topic);
             return  Task.CompletedTask;
         }
@@ -28,13 +28,13 @@ internal sealed class PlugMessage: IMessageRouter {
         if (plugStatus is null) {
             return Task.CompletedTask;
         }
-        _logger.LogInformation("Received plug ({Id}) information", id);
-        _plugCache.Set(plugStatus.ToDto(id));
+        _logger.LogInformation("Received plug ({Id}) information", device);
+        _plugCache.Set(plugStatus.ToDto(device));
         return Task.CompletedTask;
     }
 
     public bool AcceptsTopic(string topic) {
-        return _deviceCache.GetAll(DeviceType.Plug).Any(topic.EndsWith);
+        return _deviceCache.GetAll(DeviceType.Plug).Select(x => x.IeeeAddress).Any(topic.EndsWith);
     }
 }
 

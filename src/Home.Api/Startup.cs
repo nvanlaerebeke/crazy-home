@@ -41,6 +41,6 @@ public class Startup {
         var settings = new SettingsProvider().Get();
         services.AddSingleton(settings);
         services.AddPlugwise(settings);
-        services.AddMqtt();
+        services.AddMqtt(settings);
     }
 }

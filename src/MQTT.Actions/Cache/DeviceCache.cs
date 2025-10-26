@@ -1,8 +1,10 @@
 using Home.Config;
+using Home.Db;
+using Home.Db.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using MQTT.Actions.Message.Receive.Device;
-using MQTT.Actions.Objects;
 
 namespace MQTT.Actions.Cache;
 
@@ -11,40 +13,72 @@ internal sealed class DeviceCache {
 
     private readonly ISettings _settings;
     private readonly IMemoryCache _memoryCache;
+    private readonly HomeDbContextFactory _dbContextFactory;
     private readonly ILogger<DeviceCache> _logger;
 
-    private record Device(DeviceType Type, string Id);
+    private record DeviceCacheEntry(DeviceType Type, Device Device);
 
-    public DeviceCache(ISettings settings, IMemoryCache memoryCache, ILogger<DeviceCache> logger) {
+    public DeviceCache(
+        ISettings settings,
+        IMemoryCache memoryCache,
+        HomeDbContextFactory dbContextFactory,
+        ILogger<DeviceCache> logger
+    ) {
         _settings = settings;
         _memoryCache = memoryCache;
+        _dbContextFactory = dbContextFactory;
         _logger = logger;
     }
 
-    public List<string> GetAll(DeviceType deviceType) {
-        if (!_memoryCache.TryGetValue(GetKey(), out List<Device>? devices) || devices == null) {
+    public List<Device> GetAll(DeviceType deviceType) {
+        if (!_memoryCache.TryGetValue(GetKey(), out List<DeviceCacheEntry>? devices) || devices == null) {
             return [];
         }
-
-        return devices.Where(d => d.Type == deviceType).Select(d => d.Id).ToList();
+        return devices.Where(d => d.Type == deviceType).Select(x => x.Device).ToList();
     }
 
-    public void Set(List<DeviceDefinition> devices) {
-        var deviceList = new List<Device>();
+    public async Task SetAsync(List<DeviceDefinition> devices) {
+        var deviceList = new List<DeviceCacheEntry>();
 
         foreach (var device in devices) {
             if (_settings.Mqtt.PlugModelIds.Contains(device.Model)) {
                 _logger.LogInformation("Adding plug {Id}", device.FriendlyName);
-                deviceList.Add(new(DeviceType.Plug, device.FriendlyName));
+                var plug = await AddToDbAsync(DeviceType.Plug, device.IeeeAddress, device.FriendlyName);
+                deviceList.Add(new(DeviceType.Plug, plug));
             }
 
+            // ReSharper disable once InvertIf
             if (_settings.Mqtt.SensorModelIds.Contains(device.Model)) {
                 _logger.LogInformation("Adding sensor {Id}", device.FriendlyName);
-                deviceList.Add(new(DeviceType.Sensor, device.FriendlyName));
+                var sensor = await AddToDbAsync(DeviceType.Sensor, device.IeeeAddress, device.FriendlyName);
+                deviceList.Add(new(DeviceType.Sensor, sensor));
             }
         }
 
         _memoryCache.Set(GetKey(), deviceList);
+    }
+
+    private async Task<Device> AddToDbAsync(DeviceType deviceType, string ieeeAddress, string friendlyName) {
+        await using var work = await _dbContextFactory.GetAsync();
+
+        //Update existing entry if needed
+        var existingDevice = await work.Devices.FirstOrDefaultAsync(x => x.IeeeAddress.Equals(ieeeAddress));
+        if (existingDevice is not null) {
+            // ReSharper disable once InvertIf
+            if (!existingDevice.FriendlyName.Equals(friendlyName)) {
+                existingDevice.FriendlyName = friendlyName;
+                work.Devices.Update(existingDevice);
+                await work.SaveChangesAsync();
+            }
+
+            return existingDevice;
+        }
+
+        //Add new entry
+        var device = new Device { IeeeAddress = ieeeAddress, FriendlyName = friendlyName, DeviceType = deviceType };
+        work.Devices.Add(device);
+        await work.SaveChangesAsync();
+        return device;
     }
 
     private static string GetKey() => CachePrefix;

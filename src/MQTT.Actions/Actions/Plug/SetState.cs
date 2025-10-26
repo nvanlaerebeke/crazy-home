@@ -1,6 +1,8 @@
 ﻿using System.Text;
 using System.Text.Json;
+using Home.Db;
 using Home.Shared;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MQTT.Actions.Cache;
 using MQTT.Actions.Message;
@@ -12,15 +14,19 @@ namespace MQTT.Actions.Actions.Plug;
 internal sealed class SetState {
     private readonly MqttClient _client;
     private readonly PlugCache _cache;
+    private readonly HomeDbContextFactory _dbContextFactory;
     private readonly ILogger<SetState> _logger;
 
     private CancellationTokenSource? _cancellationTokenSource;
     private string? _identifier;
     private SwitchState? _switchState;
     
-    public SetState(MqttClient client, PlugCache cache, ILogger<SetState> logger) {
+    public SetState(
+        MqttClient client, PlugCache cache, HomeDbContextFactory dbContextFactory, ILogger<SetState> logger
+    ) {
         _client = client;
         _cache = cache;
+        _dbContextFactory = dbContextFactory;
         _logger = logger;
     }
 
@@ -60,7 +66,7 @@ internal sealed class SetState {
         return false;
     }
 
-    private Task CheckStateChanged(MqttApplicationMessageReceivedEventArgs eventArgs) {
+    private async Task CheckStateChanged(MqttApplicationMessageReceivedEventArgs eventArgs) {
         //Check
         if (_identifier is null || _switchState is null || _cancellationTokenSource is null) {
             throw new InvalidOperationException("Invalid State");
@@ -68,24 +74,31 @@ internal sealed class SetState {
 
         //Is this for this plug/identifier?
         if (!eventArgs.ApplicationMessage.Topic.EndsWith(_identifier)) {
-            return Task.CompletedTask;
+            return;
         }
 
         //Check if the message is a PlugStatus payload
         var payload = Encoding.UTF8.GetString(eventArgs.ApplicationMessage.Payload);
         var plugStatus = JsonSerializer.Deserialize<PlugStatus>(payload);
         if (plugStatus is null) {
-            return Task.CompletedTask;
+            return;
         }
 
         //Plug state was not changed to ON yet
         if (!plugStatus.State.Equals(_switchState.ToString(), StringComparison.CurrentCultureIgnoreCase)) {
-            return Task.CompletedTask;
+            return;
         }
 
         //Plug state was updated to ON, set it in the cache and set the continuation token
-        _cache.Set(plugStatus.ToDto(_identifier));
-        _cancellationTokenSource.Cancel();
-        return Task.CompletedTask;
+        await using var work = await _dbContextFactory.GetAsync();
+        var device = await work.Devices.FirstOrDefaultAsync(x => x.IeeeAddress.Equals(_identifier));
+        if (device is null) {
+            _logger.LogError("Device not found: {Identifier}", _identifier);
+            await _cancellationTokenSource.CancelAsync();
+            return;
+        }
+        
+        _cache.Set(plugStatus.ToDto(device));
+        await _cancellationTokenSource.CancelAsync();
     }
 }

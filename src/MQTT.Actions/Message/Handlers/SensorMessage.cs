@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
+using Home.Db;
 using Microsoft.Extensions.Logging;
 using MQTT.Actions.Cache;
 using MQTT.Actions.Message.Receive.Sensor;
-using MQTT.Actions.Objects;
 using MQTT.Actions.Objects.ExtensionMethods;
 
 namespace MQTT.Actions.Message.Handlers;
@@ -18,8 +18,8 @@ internal sealed class SensorMessage: IMessageRouter  {
         _logger = logger;
     }
     public Task RouteAsync(string topic, string payload) {
-        var id = _deviceCache.GetAll(DeviceType.Sensor).FirstOrDefault(topic.EndsWith);
-        if (string.IsNullOrEmpty(id)) {
+        var device = _deviceCache.GetAll(DeviceType.Sensor).FirstOrDefault(x => topic.EndsWith(x.IeeeAddress));
+        if (device is null) {
             _logger.LogError("Trying to add plug status for unknown device: {DeviceId}", topic);
             return  Task.CompletedTask;
         }
@@ -30,14 +30,14 @@ internal sealed class SensorMessage: IMessageRouter  {
             return Task.CompletedTask;
         }
         
-        _logger.LogInformation("Received sensor ({Id}) information", id);
+        _logger.LogInformation("Received sensor ({Id}) information", device.IeeeAddress);
         
-        _sensorCache.Set(sensorStatus.ToDto(id));
+        _sensorCache.Set(sensorStatus.ToDto(device));
         return Task.CompletedTask;
     }
 
     public bool AcceptsTopic(string topic) {
-        return _deviceCache.GetAll(DeviceType.Sensor).Any(topic.EndsWith);
+        return _deviceCache.GetAll(DeviceType.Sensor).Any(x => topic.EndsWith(x.IeeeAddress));
     }
 }
 

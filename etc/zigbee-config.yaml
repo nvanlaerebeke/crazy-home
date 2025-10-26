@@ -1,5 +1,6 @@
 serial:
-  port: /dev/ttyUSB0
+  #port: /dev/ttyUSB0
+  port: tcp://zigbee.crazyzone.be:6638
   adapter: ember
 permit_join: true
 mqtt:

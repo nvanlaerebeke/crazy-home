@@ -1,4 +1,4 @@
-﻿namespace MQTT.Actions.Objects;
+﻿namespace Home.Db;
 
 public enum DeviceType {
     Plug,

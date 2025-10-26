@@ -1,3 +1,4 @@
+using Home.Db;
 using Microsoft.Extensions.Caching.Memory;
 using MQTT.Actions.Objects;
 
@@ -18,7 +19,7 @@ internal sealed class PlugCache {
     }
 
     public List<PlugStatusDto> GetAll() {
-        return _deviceCache.GetAll(DeviceType.Plug).Select(Get).OfType<PlugStatusDto>().ToList();
+        return _deviceCache.GetAll(DeviceType.Plug).Select(x => Get(x.IeeeAddress)).OfType<PlugStatusDto>().ToList();
     }
 
     public PlugStatusDto? Get(string id) {
@@ -26,11 +27,15 @@ internal sealed class PlugCache {
     }
 
     public List<PlugCacheEntry> GetCacheEntries() {
-        return _deviceCache.GetAll(DeviceType.Plug).Select(GetCacheEntry).OfType<PlugCacheEntry>().ToList();
+        return _deviceCache
+            .GetAll(DeviceType.Plug)
+            .Select(x => GetCacheEntry(x.IeeeAddress))
+            .OfType<PlugCacheEntry>()
+            .ToList();
     }
 
     public void Set(PlugStatusDto plugStatus) {
-        _memoryCache.Set(GetKey(plugStatus.Identifier), new PlugCacheEntry(plugStatus.Identifier, plugStatus, DateTime.Now), _cacheDuration);
+        _memoryCache.Set(GetKey(plugStatus.Id), new PlugCacheEntry(plugStatus.Id, plugStatus, DateTime.Now), _cacheDuration);
     }
 
     public void Invalidate(string identifier) {

@@ -2,5 +2,14 @@ apiVersion: v2
 name: home
 description: Consolliated API for home controll
 type: application
-version: 0.0.3
-appVersion: 0.0.3
+version: 0.0.4
+appVersion: 0.0.4
+dependencies:
+  - name: mosquitto
+    condition: mqtt.enabled
+    version: 2.6.1
+    repository: https://charts.ar80.eu
+  - name: zigbee2mqtt
+    condition: mqtt.enabled
+    version: 2.6.2
+    repository: https://charts.zigbee2mqtt.io

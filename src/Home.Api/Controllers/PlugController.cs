@@ -21,8 +21,6 @@ public class PlugController : ControllerBase {
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<PlugStatus>))]
     public async Task<IActionResult> Get() {
         var result = await _plugActions.GetAllAsync();
-        var response = result.Match(r => r.Select(y => y.ToApiObject()), _ => []);
-        return Ok(response);
         return result.ToOk(x => x.Select(y => y.ToApiObject()).ToList());
     }
     

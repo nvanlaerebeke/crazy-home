@@ -1,14 +1,19 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Home.Config;
+using Microsoft.Extensions.DependencyInjection;
 using MQTT.Actions.Actions;
 using MQTT.Actions.Cache;
 using MQTT.Actions.Message;
 using MQTT.Actions.Message.Handlers;
 using MQTT.Actions.Services;
+using Home.Db;
 
 namespace MQTT.Actions;
 
 public static class Startup {
-    public static IServiceCollection AddMqtt(this IServiceCollection services) {
+    public static IServiceCollection AddMqtt(this IServiceCollection services, ISettings settings) {
+        //Configure database
+        services.AddDatabase(settings);
+        
         //Caching support
         services.AddMemoryCache();
         services.AddSingleton<BridgeCache>();

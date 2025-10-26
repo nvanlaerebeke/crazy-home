@@ -5,6 +5,9 @@ namespace Home.Api.Objects.Mqtt;
 internal sealed class SensorStatus {
     [JsonPropertyName("id")]
     public required string Id { get; init; }
+    
+    [JsonPropertyName("name")]
+    public required string Name { get; init; }
 
     [JsonPropertyName("battery")]
     public required int Battery { get; init; }

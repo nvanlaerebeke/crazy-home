@@ -14,15 +14,14 @@ internal sealed class DeviceMessage : IMessageRouter {
         _logger = logger;
     }
 
-    public Task RouteAsync(string topic, string payload) {
+    public async Task RouteAsync(string topic, string payload) {
         var devices = JsonSerializer.Deserialize<List<DeviceDefinition>>(payload);
         if (devices is null) {
             _logger.LogWarning("Invalid bridge state received: {Payload}", payload);
-            return Task.CompletedTask;
+            return;
         }
         
-        _deviceCache.Set(devices);
-        return Task.CompletedTask;
+        await _deviceCache.SetAsync(devices);
     }
 
     public bool AcceptsTopic(string topic) => topic.Equals("zigbee2mqtt/bridge/devices");

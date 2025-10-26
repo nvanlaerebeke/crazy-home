@@ -3,7 +3,8 @@
 namespace MQTT.Actions.Objects;
 
 public sealed class PlugStatusDto {
-    public required string Identifier { get; init; }
+    public required string Id { get; init; }
+    public required string Name { get; init; }
     
     public required SwitchState SwitchState { get; init; }
     
