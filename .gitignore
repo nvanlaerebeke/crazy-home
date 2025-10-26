@@ -5,6 +5,7 @@
 
 data
 values-test.yaml
+dist
 
 # User-specific files
 *.rsuser
