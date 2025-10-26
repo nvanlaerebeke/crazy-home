@@ -40,36 +40,45 @@ ingress:
   tls: []
 mqtt:
   enabled: true
-  broker: "localhost"
+  broker: "home-mosquitto"
   port: 1883
-  config: |
-    persistence true
-    persistence_location /mosquitto/data/
-
-    log_dest stdout
-
-    listener 1883
-    protocol mqtt
-
-    allow_anonymous true
+  persistence:
+    enabled: false
+    existingClaim: ""
 mosquitto:
   enabled: true
   persistence:
     enabled: false
     existingClaim: ""
+  service:
+    externalTrafficPolicy: null
+  config: |
+    listener 1883
+    listener 9090
+    protocol websockets
+    allow_anonymous true
+    persistence true
+    persistence_location /mosquitto/data/
+    log_dest stdout
 zigbee2mqtt:
   enabled: true
   zigbee2mqtt:
+    permit_join: true
     homeassistant:
       enabled: false
     timezone: CET
     mqtt:
-      server: "mqtt://mosquitto:1883"
+      server: "mqtt://home-mosquitto:1883"
     serial:
-      port: "tcp://zigbee.crazyzone.be:6638"
+      port: ""
       adapter: ember
       baudrate: null
       rtscts: null
     frontend:
-      enabled: true
+      enabled: false
       port: 8080
+  statefulset:
+    storage:
+      enabled: false
+      storageClassName: "standard"
+      existingVolume: ""

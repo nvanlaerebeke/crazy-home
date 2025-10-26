@@ -21,8 +21,12 @@ spec:
       - image: "{{ .Values.global.registry }}/{{ .Values.global.image }}:{{ .Values.global.tag }}"
         name:  {{ $.Chart.Name | lower }}
         volumeMounts:
-        - mountPath: {{ $.Values.plugwise.device.path }}
-          name: dev-usb0
+        - name: dev-usb0
+          mountPath: {{ $.Values.plugwise.device.path | quote}}
+{{- if and $.Values.mqtt.persistence.enabled $.Values.mqtt.persistence.existingClaim }}
+        - name: crazy-home-storage
+          mountPath: "/etc/crazy-home"
+{{- end }}
         securityContext:
           privileged: true
         envFrom:
@@ -42,7 +46,12 @@ spec:
       - name: dev-usb0
         hostPath:
           path: {{ $.Values.plugwise.device.path | quote }}
-{{- if $.Values.global.existingRegistrySecret }}          
+{{- if and $.Values.mqtt.persistence.enabled $.Values.mqtt.persistence.existingClaim }}
+      - name: crazy-home-storage
+        persistentVolumeClaim:
+          claimName: {{ $.Values.mqtt.persistence.existingClaim | quote }}
+{{- end }}          
+{{- if $.Values.global.existingRegistrySecret }}
       imagePullSecrets:
         - name: {{ $.Values.global.existingRegistrySecret }}
 {{ end }}
