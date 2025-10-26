@@ -58,6 +58,10 @@ internal sealed class DeviceCache {
         _memoryCache.Set(GetKey(), deviceList);
     }
     
+    /// <summary>
+    /// Update an existing cached device with the given Device object
+    /// </summary>
+    /// <param name="device"></param>
     public void UpdateDevice(Device device) {
         if (!_memoryCache.TryGetValue(GetKey(), out List<DeviceCacheEntry>? devices) || devices == null) {
             return;
@@ -72,19 +76,21 @@ internal sealed class DeviceCache {
         _memoryCache.Set(GetKey(), devices);
     }
 
+    /// <summary>
+    /// Add a new device to the database
+    ///
+    /// Note: if a device with the same ieeeAddress exists, nothing will be changed
+    /// </summary>
+    /// <param name="deviceType"></param>
+    /// <param name="ieeeAddress"></param>
+    /// <param name="friendlyName"></param>
+    /// <returns></returns>
     private async Task<Device> AddToDbAsync(DeviceType deviceType, string ieeeAddress, string friendlyName) {
         await using var work = await _dbContextFactory.GetAsync();
 
         //Update existing entry if needed
         var existingDevice = await work.Devices.FirstOrDefaultAsync(x => x.IeeeAddress.Equals(ieeeAddress));
         if (existingDevice is not null) {
-            // ReSharper disable once InvertIf
-            if (!existingDevice.FriendlyName.Equals(friendlyName)) {
-                existingDevice.FriendlyName = friendlyName;
-                work.Devices.Update(existingDevice);
-                await work.SaveChangesAsync();
-            }
-
             return existingDevice;
         }
 

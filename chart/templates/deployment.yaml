@@ -20,6 +20,7 @@ spec:
       containers:
       - image: "{{ .Values.global.registry }}/{{ .Values.global.image }}:{{ .Values.global.tag }}"
         name:  {{ $.Chart.Name | lower }}
+        imagePullPolicy: {{ $.Values.global.imagePullPolicy }}
         volumeMounts:
         - name: dev-usb0
           mountPath: {{ $.Values.plugwise.device.path | quote}}
