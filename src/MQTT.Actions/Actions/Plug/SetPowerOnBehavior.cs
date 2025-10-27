@@ -80,7 +80,7 @@ internal sealed class SetPowerOnBehavior {
     /// <exception cref="InvalidOperationException"></exception>
     private async Task CheckStateChanged(MqttApplicationMessageReceivedEventArgs eventArgs) {
         var payload = Encoding.UTF8.GetString(eventArgs.ApplicationMessage.Payload);
-        
+
         //Check
         if (_identifier is null || _switchState is null || _cancellationTokenSource is null) {
             throw new InvalidOperationException("Invalid State");
@@ -97,7 +97,7 @@ internal sealed class SetPowerOnBehavior {
             return;
         }
 
-        //Plug state was not changed to ON yet
+        //Plug state was not changed yet
         if (!plugStatus.PowerOnBehavior.Equals(_switchState.ToString(), StringComparison.CurrentCultureIgnoreCase)) {
             return;
         }
@@ -106,12 +106,7 @@ internal sealed class SetPowerOnBehavior {
         await using var work = await _dbContextFactory.GetAsync();
         var device = await work.Devices.FirstOrDefaultAsync(x => x.IeeeAddress.Equals(_identifier));
         if (device is null) {
-            _logger.LogError("Device not found: {Identifier}", _identifier);
             await _cancellationTokenSource.CancelAsync();
-            return;
-        }
-
-        if (plugStatus.PowerOnBehavior.Equals(_switchState.ToString(), StringComparison.CurrentCultureIgnoreCase)) {
             return;
         }
 
