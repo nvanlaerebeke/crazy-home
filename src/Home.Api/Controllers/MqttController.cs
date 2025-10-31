@@ -16,9 +16,11 @@ public class MqttController : ControllerBase {
     }
 
     [HttpGet("[action]")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<SensorStatus>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(JoinDuration))]
     public async Task<IActionResult> PermitJoining() {
         var result = await _plugActions.PermitJoiningAsync();
-        return result.ToOk(_ => Ok());
+        return result.ToOk(x => new JoinDuration {
+            TotalSeconds = x
+        });
     }
 }

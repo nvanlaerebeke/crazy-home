@@ -29,11 +29,11 @@ internal class MqttSensorActions : IMqttSensorActions {
         }
     }
 
-    public async Task<Result<bool>> PermitJoiningAsync() {
+    public async Task<Result<double>> PermitJoiningAsync() {
         try {
             return await _provider.GetRequiredService<PermitJoining>().ExecuteAsync();
         } catch (Exception ex) {
-            return new Result<bool>(ex);
+            return new Result<double>(ex);
         }
     }
 }
