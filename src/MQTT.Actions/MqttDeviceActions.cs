@@ -2,6 +2,8 @@
 using LanguageExt.Common;
 using Microsoft.EntityFrameworkCore;
 using MQTT.Actions.Cache;
+using MQTT.Actions.Objects;
+using MQTT.Actions.Objects.ExtensionMethods;
 
 namespace MQTT.Actions;
 
@@ -12,6 +14,11 @@ internal sealed class MqttDeviceActions : IMqttDeviceActions {
     public MqttDeviceActions(DeviceCache deviceCache, HomeDbContextFactory dbContextFactory) {
         _deviceCache = deviceCache;
         _dbContextFactory = dbContextFactory;
+    }
+
+    public async Task<Result<List<DeviceDto>>> GetAllAsync() {
+        await using var work = await _dbContextFactory.GetAsync();
+        return work.Devices.Select(x => x.ToDto()).ToList();
     }
 
     public async Task<Result<bool>> SetFriendlyNameAsync(string ieeeAddress, string friendlyName) {
@@ -32,5 +39,17 @@ internal sealed class MqttDeviceActions : IMqttDeviceActions {
         } catch (Exception ex) {
             return new Result<bool>(ex);
         }
+    }
+
+    public async Task<Result<bool>> RemoveAsync(string ieeeAddress) {
+        await using var work = await _dbContextFactory.GetAsync();
+        var device = work.Devices.FirstOrDefault(x =>x.IeeeAddress == ieeeAddress);
+        if (device is null) {
+            return true;
+        }
+
+        work.Devices.Remove(device);
+        await work.SaveChangesAsync();
+        return true;
     }
 }

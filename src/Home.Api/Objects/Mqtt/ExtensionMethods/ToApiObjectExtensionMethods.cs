@@ -28,4 +28,12 @@ internal static class ToApiObjectExtensionMethods {
             LinkQuality = sensorDto.LinkQuality
         };
     }
+
+    public static Device ToApiObject(this DeviceDto device) {
+        return new() {
+            DeviceType = device.Type,
+            IeeeAddress = device.IeeeAddress,
+            FriendlyName = device.FriendlyName,
+        }; 
+    }
 }
