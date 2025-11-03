@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.CommandLine", "Home.Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Db", "Home.Db\Home.Db.csproj", "{66D99EDD-C7B3-46EA-AE1C-959BA978612A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Auth", "Home.Auth\Home.Auth.csproj", "{A76A9F5F-D1C9-41E0-85EB-4AD45F9FE74F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +76,10 @@ Global
 		{66D99EDD-C7B3-46EA-AE1C-959BA978612A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66D99EDD-C7B3-46EA-AE1C-959BA978612A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66D99EDD-C7B3-46EA-AE1C-959BA978612A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A76A9F5F-D1C9-41E0-85EB-4AD45F9FE74F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A76A9F5F-D1C9-41E0-85EB-4AD45F9FE74F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A76A9F5F-D1C9-41E0-85EB-4AD45F9FE74F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A76A9F5F-D1C9-41E0-85EB-4AD45F9FE74F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{97DBBAB4-C9AA-4194-AC87-DE28F9C6DB3D} = {7F44A213-39A0-4E78-B316-23916A31EC40}

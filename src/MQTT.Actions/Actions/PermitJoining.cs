@@ -7,9 +7,9 @@ internal sealed class PermitJoining {
     public PermitJoining(MqttClient client) {
         _client = client;
     }
-    public async Task<double> ExecuteAsync() {
-        await _client.SendAsync(new Message.Request.PermitJoining(JoinDuration));
-        return JoinDuration.TotalSeconds;
+
+    public async Task<double> ExecuteAsync(TimeSpan? duration = null) {
+        await _client.SendAsync(new Message.Request.PermitJoining(duration ?? JoinDuration));
+        return (duration ?? JoinDuration).TotalSeconds;
     }
 }
-

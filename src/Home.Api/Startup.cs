@@ -1,8 +1,10 @@
 ﻿using System.Text.Json.Serialization;
+using Home.Auth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Plugwise.Actions;
 using Home.Config;
+using Home.Db;
 using MQTT.Actions;
 
 namespace Home.Api;
@@ -26,11 +28,11 @@ public class Startup {
         app.UseSwaggerUI();
 
         app.UseAuthorization();
-
+        app.UseAuthentication();
         app.MapControllers();
     }
 
-    public void ConfigureServices(IServiceCollection services) {
+    public IServiceCollection ConfigureServices(IServiceCollection services) {
         // Add services to the container.
         services.AddControllers().AddJsonOptions(o => {
             // serializes enums as strings; also affects swagger model binding in JSON bodies
@@ -44,8 +46,14 @@ public class Startup {
 
         //Initialize
         var settings = new SettingsProvider().Get();
+        services.AddDatabase(settings);
         services.AddSingleton(settings);
         services.AddPlugwise(settings);
         services.AddMqtt(settings);
+        services.AddAuth(settings);
+
+        return services;
     }
+
+    
 }

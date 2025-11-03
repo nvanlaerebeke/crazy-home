@@ -36,4 +36,13 @@ internal class MqttSensorActions : IMqttSensorActions {
             return new Result<double>(ex);
         }
     }
+
+    public async Task<Result<bool>> DisableJoiningAsync() {
+        try {
+            await _provider.GetRequiredService<PermitJoining>().ExecuteAsync(TimeSpan.FromSeconds(0));
+            return true;
+        } catch (Exception ex) {
+            return new Result<bool>(ex);
+        }
+    }
 }

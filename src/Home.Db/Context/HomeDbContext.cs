@@ -7,11 +7,13 @@ namespace Home.Db.Context;
 public class HomeDbContext : DbContext {
     private readonly ISettings _settings;
     public DbSet<Device> Devices => Set<Device>();
-    
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Setting> Settings => Set<Setting>();
+
     public HomeDbContext(ISettings settings) {
         _settings = settings;
     }
-    
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
         if (!optionsBuilder.IsConfigured) {
             optionsBuilder.UseSqlite($"Data Source={_settings.ConfigDirectory}/home.sqlite");
@@ -29,6 +31,18 @@ public class HomeDbContext : DbContext {
 
             e.Property(x => x.DeviceType).HasConversion<string>();
             e.Property(x => x.PowerOnBehavior).HasConversion<string>();
+        });
+
+        modelBuilder.Entity<Setting>(e => {
+            e.HasIndex(x => x.Key).IsUnique();
+            e.Property(x => x.Key).UseCollation("NOCASE");
+            e.Property(x => x.Key).HasConversion<string>();
+        });
+
+        modelBuilder.Entity<User>(e => {
+            e.HasIndex(x => x.UserName).IsUnique();
+            e.Property(x => x.UserName).UseCollation("NOCASE");
+            e.Property(x => x.UserName).HasConversion<string>();
         });
     }
 

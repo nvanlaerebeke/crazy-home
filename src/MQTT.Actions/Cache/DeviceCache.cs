@@ -102,7 +102,7 @@ internal sealed class DeviceCache {
         if (existingDevice is not null) {
             //Make sure the Power On Behavior is set correctly!
             await _client.SendAsync(
-                new SetPowerOnBehavior(existingDevice.IeeeAddress, existingDevice.PowerOnBehavior)
+                new SetPowerOnBehavior(existingDevice.IeeeAddress, existingDevice.PowerOnBehavior ?? SwitchState.On)
             );
             return existingDevice;
         }

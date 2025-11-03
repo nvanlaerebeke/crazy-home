@@ -3,10 +3,17 @@ using Microsoft.Extensions.Caching.Memory;
 using MQTT.Actions.Objects;
 
 namespace MQTT.Actions.Cache;
-
+/// <summary>
+/// Sensor Cache
+///
+/// Note: Sensor data does not expire, this is due to the way the sensors are implemented.
+///       A sensor only sends data when it's being changed, as it is something battery operated.
+/// 
+///       Letting the cache expire would "remove" that last known value from the cache, so if no temperature
+///       change was detected during CACHE INTERVAL, then the sensor is "lost"
+/// </summary>
 internal sealed class SensorCache {
     private const string CachePrefix = "MQTT_SENSOR_CACHE_";
-    private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(10);
 
     private readonly IMemoryCache _memoryCache;
     private readonly DeviceCache _deviceCache;
@@ -39,8 +46,7 @@ internal sealed class SensorCache {
     }
 
     public void Set(SensorDto sensorStatus) {
-        _memoryCache.Set(GetKey(sensorStatus.Id), new SensorCacheEntry(sensorStatus.Id, sensorStatus, DateTime.Now),
-            _cacheDuration);
+        _memoryCache.Set(GetKey(sensorStatus.Id), new SensorCacheEntry(sensorStatus.Id, sensorStatus, DateTime.Now));
     }
 
     private static string GetKey(string id) => $"{CachePrefix}{id}";

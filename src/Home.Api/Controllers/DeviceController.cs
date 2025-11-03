@@ -1,6 +1,7 @@
 ﻿using Home.Api.ExtensionMethods;
 using Home.Api.Objects.Mqtt;
 using Home.Api.Objects.Mqtt.ExtensionMethods;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MQTT.Actions;
@@ -8,6 +9,7 @@ using MQTT.Actions;
 namespace Home.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("[controller]")]
 public sealed class DeviceController {
     private readonly IMqttDeviceActions _actions;
