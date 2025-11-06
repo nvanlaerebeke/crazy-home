@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Home.Api.Objects.Auth;
 
-public sealed class LogonInfo {
+public sealed class LogonRequest {
     [JsonPropertyName("username")]
     [Required(AllowEmptyStrings = false)]
     public required string Username { get; set; }

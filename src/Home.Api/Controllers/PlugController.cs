@@ -2,6 +2,7 @@ using Home.Api.ExtensionMethods;
 using Home.Api.Objects.Mqtt;
 using Home.Api.Objects.Mqtt.ExtensionMethods;
 using Home.Db;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +10,7 @@ using MQTT.Actions;
 
 namespace Home.Api.Controllers;
 
-[Authorize]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 [ApiController]
 [Route("[controller]")]
 public class PlugController : ControllerBase {

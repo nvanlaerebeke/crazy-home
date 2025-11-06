@@ -16,6 +16,9 @@ public static class ControllerExtensions {
 
     public static IActionResult ToError(Exception exception) {
         if (exception is not HomeApiException) {
+            if (exception is UnauthorizedAccessException) {
+                return new UnauthorizedResult();
+            }
             throw exception;
         }
 

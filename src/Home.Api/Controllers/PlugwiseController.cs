@@ -2,6 +2,7 @@ using Home.Api.ExtensionMethods;
 using Home.Api.Objects.Plugwise;
 using Home.Api.Objects.Plugwise.ExtensionMethods;
 using Home.Config;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ using Plugwise.Actions;
 
 namespace Home.Api.Controllers;
 
-[Authorize]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 [ApiController]
 [Route("Plugwise")]
 public class PlugwiseController : ControllerBase {

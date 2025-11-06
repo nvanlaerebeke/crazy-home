@@ -1,15 +1,16 @@
 ﻿using Home.Api.ExtensionMethods;
-using Home.Api.Objects.Mqtt;
 using Home.Api.Objects.Mqtt.ExtensionMethods;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MQTT.Actions;
+using Device = Home.Api.Objects.Mqtt.Device;
 
 namespace Home.Api.Controllers;
 
 [ApiController]
-[Authorize]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 [Route("[controller]")]
 public sealed class DeviceController {
     private readonly IMqttDeviceActions _actions;
