@@ -70,6 +70,7 @@ internal class JwtIssuer {
         var refreshTokenRaw = CreateRefreshTokenRaw();
         var refreshTokenHash = HashRefreshToken(refreshTokenRaw);
         user.RefreshToken = refreshTokenHash;
+        user.RefreshTokenExpiry = DateTime.UtcNow.Add(TimeSpan.FromDays(30));
         work.Users.Update(user);
         await work.SaveChangesAsync();
 

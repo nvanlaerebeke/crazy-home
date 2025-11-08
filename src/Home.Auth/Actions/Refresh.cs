@@ -21,7 +21,7 @@ internal sealed class Refresh {
 
         await using var work = await _dbContextFactory.GetAsync();
         var user = await work.Users.FirstOrDefaultAsync(x =>
-            x.RefreshToken == currentRefreshToken && x.RefreshTokenExpiry < DateTime.UtcNow
+            x.RefreshToken == currentRefreshToken && x.RefreshTokenExpiry > DateTime.UtcNow
         );
         if (user is null) {
             return new Result<AuthResultDto>(HomeApiException.from(ApiErrorCode.NotFound));
