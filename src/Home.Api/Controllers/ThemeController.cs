@@ -12,7 +12,6 @@ using Microsoft.Net.Http.Headers;
 namespace Home.Api.Controllers;
 
 [ApiController]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 [Route("[controller]")]
 public sealed class ThemeController : ControllerBase {
     private readonly IThemeService _themeService;
@@ -29,6 +28,7 @@ public sealed class ThemeController : ControllerBase {
     }
 
     [HttpPost("/Theme")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Theme))]
     public async Task<IActionResult> Add([FromBody] Theme theme) {
         var result = await _themeService.AddAsync(theme.ToDto());
@@ -36,6 +36,7 @@ public sealed class ThemeController : ControllerBase {
     }
 
     [HttpDelete("/Theme/{name}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Delete(string name) {
         var result = await _themeService.DeleteAsync(name);
@@ -57,6 +58,7 @@ public sealed class ThemeController : ControllerBase {
     }
     
     [HttpPut("/Theme")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Theme))]
     public async Task<IActionResult> Update([FromBody] Theme theme) {
         var result = await _themeService.UpdateAsync(theme.ToDto());
@@ -65,6 +67,7 @@ public sealed class ThemeController : ControllerBase {
     
     [HttpPut("/Theme/{name}/Background")]
     [Consumes("multipart/form-data")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [RequestSizeLimit(10 * 1024 * 1024)]
@@ -83,7 +86,7 @@ public sealed class ThemeController : ControllerBase {
         return !result.IsFaulted ? NoContent() : result.ToOk(_ => new EmptyResult());
     }
     
-    [HttpGet("/Theme/Background/{name}")]
+    [HttpGet("/Theme/{name}/Background")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Background(string name) {
         var getBackgroundResult = await _themeService.GetBackgroundAsync(name);
