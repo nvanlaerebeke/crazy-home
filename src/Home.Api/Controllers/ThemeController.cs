@@ -20,6 +20,13 @@ public sealed class ThemeController : ControllerBase {
     public ThemeController(IThemeService themeService) {
         _themeService = themeService;
     }
+    
+    [HttpGet("/Theme/Season")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Theme))]
+    public async Task<IActionResult> GetSeasonTheme() {
+        var result = await _themeService.GetSeasonThemeAsync();
+        return result.ToOk(x => x.ToApiObject());
+    }
 
     [HttpPost("/Theme")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Theme))]
@@ -48,19 +55,32 @@ public sealed class ThemeController : ControllerBase {
         var result = await _themeService.GetAllAsync();
         return result.ToOk(x => x);
     }
-
-    [HttpPut("/Theme/{name}/Background")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAll(string name) {
-        var result = await _themeService.SetBackgroundAsync(name, []);
-        return result.ToOk(_ => new EmptyResult());
-    }
-
+    
     [HttpPut("/Theme")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Theme))]
     public async Task<IActionResult> Update([FromBody] Theme theme) {
         var result = await _themeService.UpdateAsync(theme.ToDto());
         return result.ToOk(x => x.ToApiObject());
+    }
+    
+    [HttpPut("/Theme/{name}/Background")]
+    [Consumes("multipart/form-data")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [RequestSizeLimit(10 * 1024 * 1024)]
+    public async Task<IActionResult> UpdateBackground(string name, IFormFile file) {
+        if (file.Length == 0) {
+            return BadRequest("No file uploaded.");
+        }
+
+        // Optionally validate type/size
+        var allowed = new[] { "image/png" };
+        if (!allowed.Contains(file.ContentType, StringComparer.OrdinalIgnoreCase)) {
+            return BadRequest("Unsupported image type.");
+        }
+        await using var stream = file.OpenReadStream();
+        var result = await _themeService.SetBackgroundAsync(name, stream);
+        return !result.IsFaulted ? NoContent() : result.ToOk(_ => new EmptyResult());
     }
     
     [HttpGet("/Theme/Background/{name}")]

@@ -10,15 +10,18 @@ internal sealed class SetBackground {
         _dbContextFactory = dbContextFactory;
     }
 
-    public async Task SetAsync(string name, byte[] backgroundImage) {
+    public async Task SetAsync(string name, Stream backgroundImage) {
         await using var work = await _dbContextFactory.GetAsync();
         var theme = await work.Themes.FirstOrDefaultAsync(x => x.Name == name);
         if (theme is null) {
             throw HomeApiException.from(ApiErrorCode.NotFound);
         }
-        
-        theme.Background = backgroundImage;
-        await work.AddAsync(theme);
+
+        var backgroundImageData = new byte[backgroundImage.Length]; 
+        await backgroundImage.ReadExactlyAsync(backgroundImageData, 0, backgroundImageData.Length);
+
+        theme.Background = backgroundImageData;
+        work.Update(theme);
         await work.SaveChangesAsync();
     }
 }

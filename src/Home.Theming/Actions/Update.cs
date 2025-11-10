@@ -15,7 +15,7 @@ internal sealed class Update {
 
     public async Task<ThemeDto> UpdateAsync(ThemeDto theme) {
         await using var work = await _dbContextFactory.GetAsync();
-        var dbTheme = await work.Themes.FirstOrDefaultAsync(x => x.Name != theme.Name);
+        var dbTheme = await work.Themes.FirstOrDefaultAsync(x => x.Name == theme.Name);
         if (dbTheme is null) {
             throw HomeApiException.from(ApiErrorCode.NotFound);
         }

@@ -9,6 +9,7 @@ public interface IThemeService {
     Task<Result<ThemeBackground>> GetBackgroundAsync(string name);
     Task<Result<ThemeDto>> GetColorsAsync(string name);
     Task<Result<List<string>>> GetAllAsync();
-    Task<Result<bool>> SetBackgroundAsync(string name, byte[] background);
+    Task<Result<bool>> SetBackgroundAsync(string name, Stream backgroundImage);
     Task<Result<ThemeDto>> UpdateAsync(ThemeDto theme);
+    Task<Result<ThemeDto?>> GetSeasonThemeAsync();
 }

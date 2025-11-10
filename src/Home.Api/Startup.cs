@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Plugwise.Actions;
 using Home.Config;
 using Home.Db;
+using Home.Theming;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
@@ -95,7 +96,7 @@ public class Startup {
         services.AddPlugwise(settings);
         services.AddMqtt(settings);
         services.AddAuth(settings);
-
+        services.AddTheming();
         return services;
     }
 }

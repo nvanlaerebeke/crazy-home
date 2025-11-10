@@ -28,7 +28,7 @@ internal class ThemeService : IThemeService {
             return new Result<bool>(ex);
         }
     }
-    
+
     public async Task<Result<ThemeBackground>> GetBackgroundAsync(string name) {
         try {
             return await _services.GetRequiredService<GetBackground>().GetAsync(name);
@@ -52,21 +52,29 @@ internal class ThemeService : IThemeService {
             return new Result<List<string>>(ex);
         }
     }
-    
-    public async Task<Result<bool>> SetBackgroundAsync(string name, byte[] background) {
+
+    public async Task<Result<bool>> SetBackgroundAsync(string name, Stream backgroundImage) {
         try {
-            await _services.GetRequiredService<SetBackground>().SetAsync(name, background);
+            await _services.GetRequiredService<SetBackground>().SetAsync(name, backgroundImage);
             return true;
         } catch (Exception ex) {
             return new Result<bool>(ex);
         }
     }
-    
+
     public async Task<Result<ThemeDto>> UpdateAsync(ThemeDto theme) {
         try {
             return await _services.GetRequiredService<Update>().UpdateAsync(theme);
         } catch (Exception ex) {
             return new Result<ThemeDto>(ex);
+        }
+    }
+
+    public async Task<Result<ThemeDto?>> GetSeasonThemeAsync() {
+        try {
+            return await _services.GetRequiredService<GetSeasonTheme>().GetAsync();
+        } catch (Exception ex) {
+            return new Result<ThemeDto?>(ex);
         }
     }
 }
