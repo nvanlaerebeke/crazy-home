@@ -1,4 +1,5 @@
 ﻿using Home.Config;
+using Home.Db.Intercept;
 using Home.Db.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,15 +10,20 @@ public class HomeDbContext : DbContext {
     public DbSet<Device> Devices => Set<Device>();
     public DbSet<User> Users => Set<User>();
     public DbSet<Setting> Settings => Set<Setting>();
+    public DbSet<Theme> Themes => Set<Theme>();
 
     public HomeDbContext(ISettings settings) {
         _settings = settings;
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
+        base.OnConfiguring(optionsBuilder);
+
         if (!optionsBuilder.IsConfigured) {
             optionsBuilder.UseSqlite($"Data Source={_settings.ConfigDirectory}/home.sqlite");
         }
+
+        optionsBuilder.AddInterceptors(new LastUpdatedInterceptor());
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
@@ -43,6 +49,11 @@ public class HomeDbContext : DbContext {
             e.HasIndex(x => x.UserName).IsUnique();
             e.Property(x => x.UserName).UseCollation("NOCASE");
             e.Property(x => x.UserName).HasConversion<string>();
+        });
+
+        modelBuilder.Entity<Theme>(e => {
+            e.HasIndex(x => x.Name).IsUnique();
+            e.Property(x => x.Name).UseCollation("NOCASE");
         });
     }
 
