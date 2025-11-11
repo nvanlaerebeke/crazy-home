@@ -26,17 +26,17 @@ public sealed class DeviceController {
         return result.ToOk(x => x.Select(y => y.ToApiObject()));
     }
 
-    [HttpDelete("[action]/{ieeeAddress}")]
+    [HttpDelete("{ieeeAddress}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Remove(string ieeeAddress) {
         var result = await _actions.RemoveAsync(ieeeAddress);
         return result.ToOk(_ => new EmptyResult());
     }
 
-    [HttpPut("[action]/{ieeeAddress}/{friendlyName}")]
+    [HttpPut("{ieeeAddress}/[action]/{label}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> SetFriendlyName(string ieeeAddress, string friendlyName) {
-        var result = await _actions.SetFriendlyNameAsync(ieeeAddress, friendlyName);
+    public async Task<IActionResult> Label(string ieeeAddress, string label) {
+        var result = await _actions.SetFriendlyNameAsync(ieeeAddress, label);
         return result.ToOk(_ => new EmptyResult());
     }
 }

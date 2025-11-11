@@ -34,26 +34,20 @@ public class PlugController : ControllerBase {
         return plugStatusResult.ToOk(x => x?.ToApiObject());
     }
 
-    [HttpPost("[action]/{identifier}")]
-    public async Task<IActionResult> On(string identifier) {
-        var result = await _plugActions.SetStateAsync(identifier, SwitchState.On);
-        return result.ToOk(_ => Ok());
-    }
-
-    [HttpPost("[action]/{identifier}")]
-    public async Task<IActionResult> Off(string identifier) {
-        var result = await _plugActions.SetStateAsync(identifier, SwitchState.Off);
+    [HttpPost("{identifier}/[action]/{switchState}")]
+    public async Task<IActionResult> State(string identifier, SwitchState switchState) {
+        var result = await _plugActions.SetStateAsync(identifier, switchState);
         return result.ToOk(_ => Ok());
     }
     
-    [HttpPut("[action]/{identifier}/{switchState}")]
-    public async Task<IActionResult> SetPowerOnBehavior(string identifier, SwitchState switchState) {
+    [HttpPut("{identifier}/[action]/{switchState}")]
+    public async Task<IActionResult> PowerOnBehavior(string identifier, SwitchState switchState) {
         var result = await _plugActions.SetPowerOnBehavior(identifier, switchState);
         return result.ToOk(_ => Ok());
     }
     
-    [HttpPut("[action]/{identifier}/{allowStateChange}")]
-    public async Task<IActionResult> SetAllowStateChange(string identifier, bool allowStateChange) {
+    [HttpPut("{identifier}/[action]/{allowStateChange}")]
+    public async Task<IActionResult> AllowStateChange(string identifier, bool allowStateChange) {
         var result = await _plugActions.SetAllowStateChange(identifier, allowStateChange);
         return result.ToOk(_ => Ok());
     }
