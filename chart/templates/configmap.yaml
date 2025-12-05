@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crazy-home-configmap
+data:
+  PLUGWISE_SERIAL_PORT: {{ .Values.plugwise.device.path | quote}}
+  MQTT_CLIENT_NAME: {{ default "crazy-home" (index .Values "mqtt" "client_name") | quote }}
+  MQTT_BROKER: {{ .Values.mqtt.broker | quote }}
+  MQTT_PORT: {{ .Values.mqtt.port | quote }}

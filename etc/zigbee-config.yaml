@@ -1,0 +1,33 @@
+serial:
+  #port: /dev/ttyUSB0
+  port: tcp://zigbee.crazyzone.be:6638
+  adapter: ember
+permit_join: true
+mqtt:
+  server: mqtt://mosquitto:1883
+advanced:
+  pan_id: 6754
+  network_key:
+    - 57
+    - 57
+    - 113
+    - 95
+    - 58
+    - 2
+    - 190
+    - 41
+    - 235
+    - 192
+    - 224
+    - 22
+    - 167
+    - 77
+    - 41
+    - 19
+frontend:
+  enabled: true
+  port: 8080
+homeassistant:
+  enabled: false
+version: 4
+

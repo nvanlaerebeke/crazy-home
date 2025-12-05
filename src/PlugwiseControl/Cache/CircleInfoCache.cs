@@ -10,15 +10,13 @@ namespace PlugwiseControl.Cache;
 internal sealed class CircleInfoCache {
     private const string CachePrefix = "CircleInfoCache_";
 
-    private readonly RequestManager _requestManager;
+    private readonly IRequestManager _requestManager;
     private readonly IMemoryCache _memoryCache;
     private readonly ILogger<CircleInfoCache> _logger;
 
     private record CachedRecord(CircleInfoResponse? CircleInfoResponse, int ErrorCount);
 
-    public CircleInfoCache(
-        RequestManager requestManager, IMemoryCache memoryCache, ILogger<CircleInfoCache> logger
-    ) {
+    public CircleInfoCache(IRequestManager requestManager, IMemoryCache memoryCache, ILogger<CircleInfoCache> logger) {
         _requestManager = requestManager;
         _memoryCache = memoryCache;
         _logger = logger;

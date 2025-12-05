@@ -1,4 +1,5 @@
 using System;
+using Home.Db;
 
 namespace PlugwiseControl.Message.Responses;
 
@@ -19,9 +20,9 @@ public class CircleInfoResponse : Response {
 
     public string CurrentLog => Responses.Count >= 40 ? Responses[2][32..40] : string.Empty;
     public SwitchState State => Responses[2][40..42] == "00" ? SwitchState.Off : SwitchState.On;
-    public string Hertz => Responses.Count >= 44 ?  Responses[2][42..44] : string.Empty;
+    public string Hertz => Responses.Count >= 44 ? Responses[2][42..44] : string.Empty;
 
-    public string HW1 => Responses.Count >= 48 ?  Responses[2][44..48] : String.Empty;
+    public string HW1 => Responses.Count >= 48 ? Responses[2][44..48] : String.Empty;
     public string HW2 => Responses.Count >= 52 ? Responses[2][48..52] : string.Empty;
     public string HW3 => Responses.Count >= 56 ? Responses[2][52..56] : string.Empty;
 

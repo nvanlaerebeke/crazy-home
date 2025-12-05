@@ -1,6 +1,17 @@
 apiVersion: v2
-name: plugwise
-description: Application to communicate with the plugwise stick and circles
+name: home
+description: Consolliated API for home controll
 type: application
-version: 0.0.3
-appVersion: 0.0.3
+version: 1.0.0
+appVersion: 1.0.0
+dependencies:
+  # https://github.com/k8sonlab/publiccharts/tree/main/charts/mosquitto
+  - name: mosquitto
+    condition: mqtt.enabled
+    version: 2.6.1
+    repository: https://charts.ar80.eu
+  # https://github.com/Koenkk/zigbee  2mqtt-chart/tree/main/charts/zigbee2mqtt
+  - name: zigbee2mqtt
+    condition: mqtt.enabled
+    version: 2.6.2
+    repository: https://charts.zigbee2mqtt.io

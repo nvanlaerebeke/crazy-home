@@ -30,7 +30,8 @@ internal sealed class CircleInfoService : BackgroundService {
             }
         } catch (OperationCanceledException) {
             // normal on shutdown
-        } finally {
+        }
+        finally {
             _logger.LogInformation("CircleInfo Caching Service Stopped");
         }
     }
@@ -43,7 +44,7 @@ internal sealed class CircleInfoService : BackgroundService {
 
             _circleInfoCache.Invalidate(mac);
             _circleInfoCache.Get(mac);
-            
+
             await Task.Delay(TimeSpan.FromSeconds(5), ct);
         }
     }

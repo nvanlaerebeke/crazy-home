@@ -8,7 +8,7 @@ using PlugwiseControl.Message.Responses;
 
 namespace PlugwiseControl;
 
-internal class RequestManager {
+internal class RequestManager : IRequestManager {
     private readonly ILogger<RequestManager> _logger;
     private const int TimeOutDuration = 5000;
     private readonly Connection? _connection;
@@ -33,7 +33,7 @@ internal class RequestManager {
             _logger.LogError("Unable to use Plugwise, serial port not set or found.");
             return;
         }
-        
+
         Console.WriteLine("Opening Connection and sending init");
 
         _connection.OnDataReceived(Received);
@@ -47,7 +47,7 @@ internal class RequestManager {
             _logger.LogError("Unable to use Plugwise, serial port not set or found.");
             return new Result<T>(new Exception("Unable to use Plugwise, serial port not set or found."));
         }
-        
+
         lock (_requestLock) {
             //Send a request to the plugwise stick
             _currentRequest = new Request(new T());
@@ -73,6 +73,7 @@ internal class RequestManager {
             if (_currentRequest is null) {
                 continue;
             }
+
             //Waiting for the end of the message
             if (!_receiving.Contains("\r\n") || _receiving.Length.Equals(0)) {
                 break;
@@ -82,6 +83,7 @@ internal class RequestManager {
             if (index <= 0) {
                 continue;
             }
+
             var message = _receiving[..index]; //First Message
             _receiving = _receiving[(index + 2)..]; //"the rest"
 

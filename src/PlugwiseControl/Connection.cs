@@ -5,7 +5,7 @@ namespace PlugwiseControl;
 
 internal class Connection {
     private readonly SerialPort _serialPort;
-    private Action<string> _onDataReceivedAction;
+    private Action<string>? _onDataReceivedAction;
 
     public Connection(string serialPort) {
         _serialPort = new SerialPort(serialPort);
@@ -36,6 +36,6 @@ internal class Connection {
     }
 
     private void port_DataReceived(object sender, SerialDataReceivedEventArgs e) {
-        _onDataReceivedAction(_serialPort.ReadExisting());
+        _onDataReceivedAction?.Invoke(_serialPort.ReadExisting());
     }
 }

@@ -8,9 +8,9 @@ namespace PlugwiseControl.Calibration;
 
 internal class Calibrator {
     private readonly ConcurrentDictionary<string, CalibrationResponse> _cache = new();
-    private readonly RequestManager _requestManager;
+    private readonly IRequestManager _requestManager;
 
-    public Calibrator(RequestManager requestManager) {
+    public Calibrator(IRequestManager requestManager) {
         _requestManager = requestManager;
     }
 

@@ -1,10 +1,12 @@
 global:
   registry: harbor.crazyzone.be/crazyzone
-  image: plugwise
-  tag: 0.0.3
+  image: home
+  tag: 1.0.0
+  imagePullPolicy: IfNotPresent
   #Use an existing secret for your registry
-  #existingRegisrySecret: ""
+  #existingRegistrySecret: ""
 plugwise:
+  enabled: false
   device:
     path: /dev/ttyUSB0
 resources:
@@ -37,3 +39,47 @@ ingress:
   #     - docs.example.com
   #     secretName: docs-tls
   tls: []
+mqtt:
+  enabled: true
+  broker: "home-mosquitto"
+  port: 1883
+  persistence:
+    enabled: false
+    existingClaim: ""
+mosquitto:
+  enabled: true
+  persistence:
+    enabled: false
+    existingClaim: ""
+  service:
+    externalTrafficPolicy: null
+  config: |
+    listener 1883
+    listener 9090
+    protocol websockets
+    allow_anonymous true
+    persistence true
+    persistence_location /mosquitto/data/
+    log_dest stdout
+zigbee2mqtt:
+  enabled: true
+  zigbee2mqtt:
+    permit_join: true
+    homeassistant:
+      enabled: false
+    timezone: CET
+    mqtt:
+      server: "mqtt://home-mosquitto:1883"
+    serial:
+      port: ""
+      adapter: ember
+      baudrate: null
+      rtscts: null
+    frontend:
+      enabled: false
+      port: 8080
+  statefulset:
+    storage:
+      enabled: false
+      storageClassName: "standard"
+      existingVolume: ""
