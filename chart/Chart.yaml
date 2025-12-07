@@ -2,8 +2,8 @@ apiVersion: v2
 name: home
 description: Consolliated API for home controll
 type: application
-version: 1.0.0
-appVersion: 1.0.0
+version: 1.0.1
+appVersion: 1.0.1
 dependencies:
   # https://github.com/k8sonlab/publiccharts/tree/main/charts/mosquitto
   - name: mosquitto
