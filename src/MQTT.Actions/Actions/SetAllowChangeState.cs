@@ -3,7 +3,7 @@ using Home.Error;
 using Microsoft.EntityFrameworkCore;
 using MQTT.Actions.Cache;
 
-namespace MQTT.Actions.Actions.Plug;
+namespace MQTT.Actions.Actions;
 
 internal sealed class SetAllowChangeState {
     private readonly DeviceCache _cache;

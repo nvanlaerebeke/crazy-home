@@ -10,10 +10,16 @@ internal static class SwitchStatusExtensionMethods {
             ? SwitchState.Off
             : SwitchState.On;
         
+        var powerOnBehaviour = status.PowerOnBehavior.Equals("on", StringComparison.InvariantCultureIgnoreCase)
+            ? SwitchState.On
+            : SwitchState.Off;
+        
         return new() {
             Id = device.IeeeAddress,
             Name = device.FriendlyName,
-            SwitchState = switchStatus
+            SwitchState = switchStatus,
+            AllowStateChange = device.AllowStateChange,
+            PowerOnBehavior = powerOnBehaviour
         };
     }
 }

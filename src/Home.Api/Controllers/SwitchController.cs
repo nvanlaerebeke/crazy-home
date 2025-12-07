@@ -39,4 +39,16 @@ public class SwitchController : ControllerBase {
         var result = await _actions.SetStateAsync(identifier, switchState);
         return result.ToOk(_ => Ok());
     }
+    
+    [HttpPut("{identifier}/[action]/{switchState}")]
+    public async Task<IActionResult> PowerOnBehavior(string identifier, SwitchState switchState) {
+        var result = await _actions.SetPowerOnBehavior(identifier, switchState);
+        return result.ToOk(_ => Ok());
+    }
+    
+    [HttpPut("{identifier}/[action]/{allowStateChange}")]
+    public async Task<IActionResult> AllowStateChange(string identifier, bool allowStateChange) {
+        var result = await _actions.SetAllowStateChange(identifier, allowStateChange);
+        return result.ToOk(_ => Ok());
+    }
 }

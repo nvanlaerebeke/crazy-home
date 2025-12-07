@@ -22,7 +22,9 @@ internal static class ToApiObjectExtensionMethods {
         return new() {
             Identifier = plugStatus.Id,
             Name = plugStatus.Name,
-            SwitchState = plugStatus.SwitchState
+            SwitchState = plugStatus.SwitchState,
+            AllowStateChange = plugStatus.AllowStateChange,
+            PowerOnBehavior = plugStatus.PowerOnBehavior
         };
     }
 

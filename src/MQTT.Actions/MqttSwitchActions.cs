@@ -1,6 +1,7 @@
 ﻿using Home.Db;
 using LanguageExt.Common;
 using Microsoft.Extensions.DependencyInjection;
+using MQTT.Actions.Actions;
 using MQTT.Actions.Actions.Switch;
 using MQTT.Actions.Objects;
 
@@ -34,6 +35,22 @@ internal class MqttSwitchActions : IMqttSwitchActions {
             return await _provider.GetRequiredService<GetSwitchStatus>().ExecuteAsync(identifier);
         } catch (Exception ex) {
             return new Result<SwitchStatusDto?>(ex);
+        }
+    }
+    
+    public async Task<Result<bool>> SetPowerOnBehavior(string id, SwitchState switchState) {
+        try {
+            return await _provider.GetRequiredService<SetPowerOnBehavior>().ExecuteAsync(id, switchState);
+        } catch (Exception ex) {
+            return new Result<bool>(ex);
+        }
+    }
+    
+    public async Task<Result<bool>> SetAllowStateChange(string id, bool allowStateChange) {
+        try {
+            return await _provider.GetRequiredService<SetAllowChangeState>().ExecuteAsync(id, allowStateChange);
+        } catch (Exception ex) {
+            return new Result<bool>(ex);
         }
     }
 }

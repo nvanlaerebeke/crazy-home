@@ -26,4 +26,7 @@ internal sealed class SwitchStatus {
 
     [JsonPropertyName("state")]
     public string State { get; init; } = string.Empty;
+    
+    [JsonPropertyName("power_on_behavior")]
+    public string PowerOnBehavior { get; init; } = string.Empty;
 }

@@ -13,4 +13,11 @@ public sealed class SwitchStatus {
     [JsonPropertyName("state")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public required SwitchState SwitchState { get; init; }
+    
+    [JsonPropertyName("allow_state_change")]
+    public bool AllowStateChange { get; set; }
+
+    [JsonPropertyName("power_on_behaviour")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public SwitchState PowerOnBehavior { get; set; }
 }

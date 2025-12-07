@@ -29,11 +29,10 @@ internal sealed class SensorCache {
         return _deviceCache.GetAll(DeviceType.Sensor).Select(x => Get(x.IeeeAddress)).OfType<SensorDto>().ToList();
     }
 
-    public SensorDto? Get(string identifier) {
-        if (!_memoryCache.TryGetValue(GetKey(identifier), out SensorCacheEntry? cachedRecord) || cachedRecord is null) {
+    public SensorDto? Get(string id) {
+        if (!_memoryCache.TryGetValue(GetKey(id), out SensorCacheEntry? cachedRecord) || cachedRecord is null) {
             return null;
         }
-
         return cachedRecord.Sensor;
     }
 
@@ -56,6 +55,18 @@ internal sealed class SensorCache {
             return null;
         }
 
+        var device = _deviceCache.Get(id);
+        if (device != null) {
+            return new SensorCacheEntry(device.Id, new() {
+                Id = device.IeeeAddress,
+                Name = device.FriendlyName,
+                Battery = cachedRecord.Sensor.Battery,
+                Humidity = cachedRecord.Sensor.Battery,
+                Temperature = cachedRecord.Sensor.Battery,
+                LinkQuality = cachedRecord.Sensor.Battery,
+            }, cachedRecord.LastUpdated);
+            
+        }
         return cachedRecord;
     }
 }

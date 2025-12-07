@@ -7,4 +7,6 @@ public sealed class SwitchStatusDto {
     public required string Name { get; init; }
 
     public required SwitchState SwitchState { get; init; }
+    public required bool AllowStateChange { get; init; }
+    public required SwitchState PowerOnBehavior { get; init; }
 }

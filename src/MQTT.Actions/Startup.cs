@@ -42,8 +42,8 @@ public static class Startup {
         
         services.AddTransient<Actions.Plug.GetAll>();
         services.AddTransient<Actions.Plug.GetPlugStatus>();
-        services.AddTransient<Actions.Plug.SetAllowChangeState>();
-        services.AddTransient<Actions.Plug.SetPowerOnBehavior>();
+        services.AddTransient<SetAllowChangeState>();
+        services.AddTransient<SetPowerOnBehavior>();
         services.AddTransient<Actions.Plug.SetState>();
 
         services.AddTransient<Actions.Sensor.GetAll>();

@@ -41,6 +41,13 @@ internal sealed class DeviceCache {
 
         return devices.Where(d => d.Type == deviceType).Select(x => x.Device).ToList();
     }
+    
+    public Device? Get(string id) {
+        if (!_memoryCache.TryGetValue(GetKey(), out List<DeviceCacheEntry>? devices) || devices == null) {
+            return null;
+        }
+        return devices.FirstOrDefault(x => x.Device.IeeeAddress == id)?.Device;
+    }
 
     public async Task SetAsync(List<DeviceDefinition> devices) {
         var deviceList = new List<DeviceCacheEntry>();

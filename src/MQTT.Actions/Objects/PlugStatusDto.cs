@@ -12,8 +12,8 @@ public sealed class PlugStatusDto {
 
     public required double Current { get; init; }
     public required double Voltage { get; init; }
-    public required bool AllowStateChange { get; set; }
-    public required SwitchState PowerOnBehavior { get; set; }
+    public required bool AllowStateChange { get; init; }
+    public required SwitchState PowerOnBehavior { get; init; }
 
     public double PowerFactor {
         get {

@@ -43,6 +43,21 @@ internal sealed class PlugCache {
             return null;
         }
 
+        var device = _deviceCache.Get(id);
+        if (device != null) {
+            return new PlugCacheEntry(device.Id, new() {
+                Id = device.IeeeAddress,
+                Name = device.FriendlyName,
+                SwitchState = cachedRecord.Status.SwitchState,
+                Usage = cachedRecord.Status.Usage,
+                Current = cachedRecord.Status.Current,
+                Voltage = cachedRecord.Status.Voltage,
+                AllowStateChange = device.AllowStateChange,
+                PowerOnBehavior = device.PowerOnBehavior ?? SwitchState.Off
+
+            }, cachedRecord.LastUpdated);
+        }
+        
         return cachedRecord;
     }
 

@@ -11,7 +11,7 @@ internal sealed class SwitchCache {
     private readonly IMemoryCache _memoryCache;
     private readonly DeviceCache _deviceCache;
 
-    public record SwitchCacheEntry(string Id, SwitchStatusDto Status, DateTime LastUpdated);
+    public record SwitchCacheEntry(string Id, SwitchStatusDto Switch, DateTime LastUpdated);
 
     public SwitchCache(IMemoryCache memoryCache, DeviceCache deviceCache) {
         _memoryCache = memoryCache;
@@ -25,7 +25,7 @@ internal sealed class SwitchCache {
     }
 
     public SwitchStatusDto? Get(string id) {
-        return GetCacheEntry(id)?.Status;
+        return GetCacheEntry(id)?.Switch;
     }
 
     public List<SwitchCacheEntry> GetCacheEntries() {
@@ -45,6 +45,16 @@ internal sealed class SwitchCache {
             return null;
         }
 
+        var device = _deviceCache.Get(id);
+        if (device != null) {
+            return new SwitchCacheEntry(device.Id, new() {
+                Id = device.IeeeAddress,
+                Name = device.FriendlyName,
+                SwitchState = cachedRecord.Switch.SwitchState,
+                AllowStateChange = device.AllowStateChange,
+                PowerOnBehavior = device.PowerOnBehavior ?? SwitchState.Off
+            }, cachedRecord.LastUpdated);
+        }
         return cachedRecord;
     }
 

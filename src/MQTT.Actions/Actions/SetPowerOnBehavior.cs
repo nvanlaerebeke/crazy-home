@@ -8,7 +8,7 @@ using MQTT.Actions.Message;
 using MQTT.Actions.Objects.ExtensionMethods;
 using MQTTnet;
 
-namespace MQTT.Actions.Actions.Plug;
+namespace MQTT.Actions.Actions;
 
 internal sealed class SetPowerOnBehavior {
     private readonly MqttClient _client;
