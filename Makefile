@@ -3,6 +3,8 @@
 PROJECT="Home"
 PROJECT_LOWER=$(shell echo $(PROJECT) | tr A-Z a-z)
 PWD=$(shell pwd)
+PORT:=4002
+NAMESPACE:=power
 
 # Docker registry
 REGISTRY:=harbor.crazyzone.be/crazyzone
@@ -79,3 +81,9 @@ docker-up:
 #
 ef-migrations:
 	cd ./src/Home.Db && dotnet ef migrations add ${NAME} && cd -
+
+#
+# Take over the service that's running in the k8s cluster
+#
+take:
+	telepresence intercept --port ${PORT} "${PROJECT_LOWER}"
