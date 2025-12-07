@@ -2,5 +2,6 @@
 
 public enum DeviceType {
     Plug,
-    Sensor
+    Sensor,
+    Switch
 }

@@ -6,7 +6,7 @@ namespace MQTT.Actions.Cache;
 
 internal sealed class PlugCache {
     private const string CachePrefix = "MQTT_PLUG_CACHE_";
-    private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(10);
+    private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(15);
 
     private readonly IMemoryCache _memoryCache;
     private readonly DeviceCache _deviceCache;
@@ -38,7 +38,7 @@ internal sealed class PlugCache {
         _memoryCache.Set(GetKey(plugStatus.Id), new PlugCacheEntry(plugStatus.Id, plugStatus, DateTime.Now), _cacheDuration);
     }
 
-    private PlugCacheEntry? GetCacheEntry(string id) {
+    public PlugCacheEntry? GetCacheEntry(string id) {
         if (!_memoryCache.TryGetValue(GetKey(id), out PlugCacheEntry? cachedRecord) || cachedRecord is null) {
             return null;
         }

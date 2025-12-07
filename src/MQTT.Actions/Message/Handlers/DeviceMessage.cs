@@ -5,7 +5,7 @@ using MQTT.Actions.Message.Receive.Device;
 
 namespace MQTT.Actions.Message.Handlers;
 
-internal sealed class DeviceMessage : IMessageRouter {
+internal sealed class DeviceMessage : IMessageHandler {
     private readonly DeviceCache _deviceCache;
     private readonly ILogger<DeviceMessage> _logger;
 
@@ -14,7 +14,7 @@ internal sealed class DeviceMessage : IMessageRouter {
         _logger = logger;
     }
 
-    public async Task RouteAsync(string topic, string payload) {
+    public async Task HandleAsync(string topic, string payload) {
         var devices = JsonSerializer.Deserialize<List<DeviceDefinition>>(payload);
         if (devices is null) {
             _logger.LogWarning("Invalid bridge state received: {Payload}", payload);

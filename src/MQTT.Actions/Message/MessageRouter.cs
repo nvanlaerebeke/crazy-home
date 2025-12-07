@@ -7,7 +7,7 @@ using MQTTnet;
 namespace MQTT.Actions.Message;
 
 internal sealed class MessageRouter {
-    private readonly List<IMessageRouter> _routers = [];
+    private readonly List<IMessageHandler> _routers = [];
     private readonly ILogger<MessageRouter> _logger;
 
     public MessageRouter(IServiceProvider serviceProvider, ILogger<MessageRouter> logger) {
@@ -18,6 +18,7 @@ internal sealed class MessageRouter {
         _routers.Add(serviceProvider.GetRequiredService<LogMessage>());
         _routers.Add(serviceProvider.GetRequiredService<PlugMessage>());
         _routers.Add(serviceProvider.GetRequiredService<SensorMessage>());
+        _routers.Add(serviceProvider.GetRequiredService<SwitchMessage>());
     }
 
     public async Task RouteAsync(MqttApplicationMessageReceivedEventArgs eventArgs) {
@@ -39,7 +40,7 @@ internal sealed class MessageRouter {
                 return;
             }
 
-            await router.RouteAsync(topic, payload);
+            await router.HandleAsync(topic, payload);
         } catch (Exception ex) {
             _logger.LogError(ex, "Failed to process message: {Topic} => {Payload}", topic, payload);
         }

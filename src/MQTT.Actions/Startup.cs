@@ -16,6 +16,7 @@ public static class Startup {
         services.AddSingleton<DeviceCache>();
         services.AddSingleton<PlugCache>();
         services.AddSingleton<SensorCache>();
+        services.AddSingleton<SwitchCache>();
 
         //Background Services
         services.AddHostedService<AutoRefreshService>();
@@ -29,12 +30,14 @@ public static class Startup {
         services.AddSingleton<MessageRouter>();
         services.AddSingleton<PlugMessage>();
         services.AddSingleton<SensorMessage>();
+        services.AddSingleton<SwitchMessage>();
 
         //Actions
         services.AddSingleton<IMqttPlugActions, MqttPlugActions>();
         services.AddSingleton<IMqttSensorActions, MqttSensorActions>();
         services.AddSingleton<IMqttDeviceActions, MqttDeviceActions>();
-
+        services.AddSingleton<IMqttSwitchActions, MqttSwitchActions>();
+        
         services.AddSingleton<PermitJoining>();
         
         services.AddTransient<Actions.Plug.GetAll>();
@@ -46,6 +49,10 @@ public static class Startup {
         services.AddTransient<Actions.Sensor.GetAll>();
         services.AddTransient<Actions.Sensor.GetSensorStatus>();
 
+        services.AddTransient<Actions.Switch.GetAll>();
+        services.AddTransient<Actions.Switch.GetSwitchStatus>();
+        services.AddTransient<Actions.Switch.SetState>();
+        
         //Misc
         services.AddSingleton<MqttClient>();
 

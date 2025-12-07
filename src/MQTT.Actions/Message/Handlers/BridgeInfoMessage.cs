@@ -5,7 +5,7 @@ using MQTT.Actions.Message.Receive.Bridge;
 
 namespace MQTT.Actions.Message.Handlers;
 
-internal sealed class BridgeInfoMessage : IMessageRouter {
+internal sealed class BridgeInfoMessage : IMessageHandler {
     private readonly BridgeCache _bridgeCache;
     private readonly ILogger<BridgeInfoMessage> _logger;
 
@@ -14,7 +14,7 @@ internal sealed class BridgeInfoMessage : IMessageRouter {
         _logger = logger;
     }
 
-    public Task RouteAsync(string topic, string payload) {
+    public Task HandleAsync(string topic, string payload) {
         switch (topic) {
             case "zigbee2mqtt/bridge/state": {
                 var bridgeState = JsonSerializer.Deserialize<BridgeState>(payload);

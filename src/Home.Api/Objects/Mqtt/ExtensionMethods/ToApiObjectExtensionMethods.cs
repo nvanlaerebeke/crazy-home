@@ -17,6 +17,14 @@ internal static class ToApiObjectExtensionMethods {
             PowerOnBehavior = plugStatus.PowerOnBehavior
         };
     }
+    
+    public static SwitchStatus ToApiObject(this SwitchStatusDto plugStatus) {
+        return new() {
+            Identifier = plugStatus.Id,
+            Name = plugStatus.Name,
+            SwitchState = plugStatus.SwitchState
+        };
+    }
 
     public static SensorStatus ToApiObject(this SensorDto sensorDto) {
         return new() {

@@ -7,7 +7,7 @@ using MQTT.Actions.Objects.ExtensionMethods;
 
 namespace MQTT.Actions.Message.Handlers;
 
-internal sealed class SensorMessage: IMessageRouter  {
+internal sealed class SensorMessage: IMessageHandler  {
     private readonly SensorCache _sensorCache;
     private readonly DeviceCache _deviceCache;
     private readonly ILogger<SensorMessage> _logger;
@@ -17,10 +17,10 @@ internal sealed class SensorMessage: IMessageRouter  {
         _deviceCache = deviceCache;
         _logger = logger;
     }
-    public Task RouteAsync(string topic, string payload) {
+    public Task HandleAsync(string topic, string payload) {
         var device = _deviceCache.GetAll(DeviceType.Sensor).FirstOrDefault(x => topic.EndsWith(x.IeeeAddress));
         if (device is null) {
-            _logger.LogError("Trying to add plug status for unknown device: {DeviceId}", topic);
+            _logger.LogError("Trying to add sensor status for unknown device: {DeviceId}", topic);
             return  Task.CompletedTask;
         }
         

@@ -21,6 +21,7 @@ internal sealed class Mqtt : IMqtt {
 
     public List<string> PlugModelIds => ["S60ZBTPF"];
     public List<string> SensorModelIds => ["SNZB-02P"];
+    public List<string> SwitchModelIds => ["ZBMINIR2"];
 
     public string ClientName {
         get {

@@ -51,7 +51,7 @@ internal sealed class SensorCache {
 
     private static string GetKey(string id) => $"{CachePrefix}{id}";
 
-    private SensorCacheEntry? GetCacheEntry(string id) {
+    public SensorCacheEntry? GetCacheEntry(string id) {
         if (!_memoryCache.TryGetValue(GetKey(id), out SensorCacheEntry? cachedRecord) || cachedRecord is null) {
             return null;
         }

@@ -6,4 +6,5 @@ public interface IMqtt {
     string ClientName { get; }
     List<string> PlugModelIds { get; }
     List<string> SensorModelIds { get; }
+    List<string> SwitchModelIds { get; }
 }

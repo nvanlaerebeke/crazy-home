@@ -52,11 +52,17 @@ internal sealed class DeviceCache {
                 deviceList.Add(new(DeviceType.Plug, plug));
             }
 
-            // ReSharper disable once InvertIf
             if (_settings.Mqtt.SensorModelIds.Contains(device.Model)) {
                 _logger.LogInformation("Adding sensor {Id}", device.FriendlyName);
                 var sensor = await AddToDbAsync(DeviceType.Sensor, device);
                 deviceList.Add(new(DeviceType.Sensor, sensor));
+            }
+            
+            // ReSharper disable once InvertIf            
+            if (_settings.Mqtt.SwitchModelIds.Contains(device.Model)) {
+                _logger.LogInformation("Adding switch {Id}", device.FriendlyName);
+                var sensor = await AddToDbAsync(DeviceType.Switch, device);
+                deviceList.Add(new(DeviceType.Switch, sensor));
             }
         }
 

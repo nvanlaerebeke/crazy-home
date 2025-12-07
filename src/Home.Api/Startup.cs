@@ -10,7 +10,7 @@ using Home.Db;
 using Home.Theming;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using MQTT.Actions;
 
 namespace Home.Api;
@@ -18,11 +18,11 @@ namespace Home.Api;
 public class Startup {
     public void Start(WebApplicationBuilder builder) {
         ConfigureServices(builder.Services);
-        
+
         // optional: enable detailed logging
         builder.Logging.AddFilter("Microsoft.AspNetCore.Authentication", LogLevel.Debug);
         builder.Logging.AddFilter("Microsoft.IdentityModel", LogLevel.Debug);
-        
+
         var app = builder.Build();
         ConfigureApp(app);
         app.Run();
@@ -80,13 +80,8 @@ public class Startup {
                     BearerFormat = "JWT"
                 });
 
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement { {
-                    new OpenApiSecurityScheme {
-                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
-                    },
-                    Array.Empty<string>()
-                }
-            });
+            c.AddSecurityRequirement(document =>
+                new OpenApiSecurityRequirement { [new OpenApiSecuritySchemeReference("Bearer", document)] = [] });
         });
 
         //Initialize

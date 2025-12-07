@@ -6,7 +6,7 @@ using MQTT.Actions.Objects.ExtensionMethods;
 
 namespace MQTT.Actions.Message.Handlers;
 
-internal sealed class PlugMessage: IMessageRouter {
+internal sealed class PlugMessage: IMessageHandler {
     private readonly DeviceCache _deviceCache;
     private readonly PlugCache _plugCache;
     private readonly ILogger _logger;
@@ -17,7 +17,7 @@ internal sealed class PlugMessage: IMessageRouter {
         _logger = logger;
     }
     
-    public Task RouteAsync(string topic, string payload) {
+    public Task HandleAsync(string topic, string payload) {
         _logger.LogInformation("Received plug message with topic {Topic}", topic);
         var device = _deviceCache.GetAll(DeviceType.Plug).FirstOrDefault(x => topic.EndsWith(x.IeeeAddress));
         if (device is null) {
