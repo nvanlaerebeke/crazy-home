@@ -19,12 +19,16 @@ public sealed class ThemeController : ControllerBase {
     public ThemeController(IThemeService themeService) {
         _themeService = themeService;
     }
-    
+
     [HttpGet("/Theme/Season")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Theme))]
     public async Task<IActionResult> GetSeasonTheme() {
         var result = await _themeService.GetSeasonThemeAsync();
-        return result.ToOk(x => x.ToApiObject());
+        if (result.IsFaulted) {
+            return result.ToOk(x => x?.ToApiObject());
+        }
+
+        return result.Match(x => x, _ => null) is null ? NotFound() : result.ToOk(x => x?.ToApiObject());
     }
 
     [HttpPost("/Theme")]
@@ -56,7 +60,7 @@ public sealed class ThemeController : ControllerBase {
         var result = await _themeService.GetAllAsync();
         return result.ToOk(x => x);
     }
-    
+
     [HttpPut("/Theme")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Theme))]
@@ -64,7 +68,7 @@ public sealed class ThemeController : ControllerBase {
         var result = await _themeService.UpdateAsync(theme.ToDto());
         return result.ToOk(x => x.ToApiObject());
     }
-    
+
     [HttpPut("/Theme/{name}/Background")]
     [Consumes("multipart/form-data")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -81,11 +85,12 @@ public sealed class ThemeController : ControllerBase {
         if (!allowed.Contains(file.ContentType, StringComparer.OrdinalIgnoreCase)) {
             return BadRequest("Unsupported image type.");
         }
+
         await using var stream = file.OpenReadStream();
         var result = await _themeService.SetBackgroundAsync(name, stream);
         return !result.IsFaulted ? NoContent() : result.ToOk(_ => new EmptyResult());
     }
-    
+
     [HttpGet("/Theme/{name}/Background")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Background(string name) {
