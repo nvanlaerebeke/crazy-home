@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Home.Db.Migrations
 {
-    [DbContext(typeof(HomeDbContext))]
+    [DbContext(typeof(Context.HomeDbContext))]
     [Migration("20251106163142_Auth")]
     partial class Auth
     {

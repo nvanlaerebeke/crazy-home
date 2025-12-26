@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Home.Db.Migrations
 {
-    [DbContext(typeof(HomeDbContext))]
+    [DbContext(typeof(Context.HomeDbContext))]
     [Migration("20251110194541_Theming")]
     partial class Theming
     {

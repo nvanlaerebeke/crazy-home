@@ -12,7 +12,7 @@ namespace Home.Api.Controllers;
 [ApiController]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 [Route("[controller]")]
-public sealed class DeviceController {
+public sealed class DeviceController : ControllerBase {
     private readonly IMqttDeviceActions _actions;
 
     public DeviceController(IMqttDeviceActions actions) {

@@ -6,6 +6,7 @@
 data
 values-test.yaml
 dist
+launchSettings.json
 
 # User-specific files
 *.rsuser

@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
 using Home.Auth;
+using Home.AutoPlayer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Plugwise.Actions;
@@ -80,8 +81,18 @@ public class Startup {
                     BearerFormat = "JWT"
                 });
 
+            c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
+            {
+                Description = "API key header. Example: \"X-API-KEY: {key}\"",
+                Name = "X-API-KEY",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey
+            });
+            
             c.AddSecurityRequirement(document =>
                 new OpenApiSecurityRequirement { [new OpenApiSecuritySchemeReference("Bearer", document)] = [] });
+            c.AddSecurityRequirement(document =>
+                new OpenApiSecurityRequirement { [new OpenApiSecuritySchemeReference("ApiKey", document)] = [] });
         });
 
         //Initialize
@@ -92,6 +103,7 @@ public class Startup {
         services.AddMqtt(settings);
         services.AddAuth(settings);
         services.AddTheming();
+        services.AddAudioPlayerSupport(settings);
         return services;
     }
 }

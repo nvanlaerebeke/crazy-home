@@ -17,4 +17,11 @@ public class HomeApiException : ApiException<ApiErrorCode> {
     public static HomeApiException from(ApiErrorCode error, string message, HttpStatusCode httpStatusCode) {
         return new HomeApiException(new ApiError(error, httpStatusCode) { Message = message });
     }
+
+    public static HomeApiException from(Exception ex) {
+        if (ex is HomeApiException homeApiException) {
+            return homeApiException;
+        }
+        return from(ApiErrorCode.UnknownError, ex.Message, HttpStatusCode.InternalServerError);
+    }
 }

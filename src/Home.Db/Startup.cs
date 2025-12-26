@@ -1,5 +1,4 @@
 ﻿using Home.Config;
-using Home.Db.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,17 +11,17 @@ public static class Startup {
         }
 
         // Scoped DbContext with pooling for web requests
-        services.AddDbContextPool<HomeDbContext>((_, o) => {
+        services.AddDbContextPool<Context.HomeDbContext>((_, o) => {
             o.UseSqlite($"Data Source={settings.ConfigDirectory}/home.sqlite");
         });
 
         // Factory for singletons/background services
-        services.AddDbContextFactory<HomeDbContext>((_, o) => {
+        services.AddDbContextFactory<Context.HomeDbContext>((_, o) => {
             o.UseSqlite($"Data Source={settings.ConfigDirectory}/home.sqlite");
         });
         
         services.AddSingleton<HomeDbContextFactory>(s =>
-            new HomeDbContextFactory(s.GetRequiredService<IDbContextFactory<HomeDbContext>>())
+            new HomeDbContextFactory(s.GetRequiredService<IDbContextFactory<Context.HomeDbContext>>())
         );
 
         SetupDb(settings);
@@ -30,7 +29,7 @@ public static class Startup {
     }
 
     private static void SetupDb(ISettings settings) {
-        using var work = new HomeDbContext(settings);
+        using var work = new Context.HomeDbContext(settings);
         work.Database.Migrate();
         work.ConfigurePragmasAsync().GetAwaiter().GetResult();
     }
