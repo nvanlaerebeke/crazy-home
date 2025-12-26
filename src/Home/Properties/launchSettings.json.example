@@ -9,6 +9,8 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "PLUGWISE_SERIAL_PORT_": "/dev/ttyUSB0",
+        "SPOTIFY_CLIENT_ID": "",
+        "SPOTIFY_CLIENT_SECRET": "",
         "MQTT_BROKER": "192.168.5.5"
       }
     },
