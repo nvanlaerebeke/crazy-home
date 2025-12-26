@@ -5,5 +5,6 @@ public enum ApiErrorCode {
     UnknownError,
     NotFound,
     Exists,
-    UnAuthorized
+    UnAuthorized,
+    InvalidPlayListName
 }

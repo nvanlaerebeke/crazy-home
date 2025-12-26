@@ -65,10 +65,7 @@ public sealed class SpotifyTokenStore {
                     currentToken.RefreshToken)
                 );
                 currentToken.AccessToken = refreshed.AccessToken;
-                currentToken.TokenType = refreshed.TokenType;
                 currentToken.ExpiresIn = refreshed.ExpiresIn;
-                currentToken.Scope = refreshed.Scope;
-                currentToken.RefreshToken = refreshed.RefreshToken;
                 currentToken.CreatedAt = refreshed.CreatedAt;
                 
                 await SaveAsync(currentToken);

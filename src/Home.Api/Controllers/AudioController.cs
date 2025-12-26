@@ -61,8 +61,44 @@ public sealed class AudioController : ControllerBase {
     [HttpPut("spotify/device/{name}")]
     [ApiKeyAuthorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> Set(string name) {
+    public async Task<IActionResult> SetDevice(string name) {
         var result = await _audioActions.StartPlayBackAsync(name);
+        return result.ToOk(_ => new EmptyResult());
+    }
+
+    [HttpGet("spotify/playlist")]
+    [ApiKeyAuthorize]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PlayList))]
+    public async Task<IActionResult> GetPlayList() {
+        var result = await _audioActions.GetPlayListAsync();
+        if (result.IsFaulted) {
+            return result.ToOk(_ => new EmptyResult());
+        }
+        
+        return result.Match(x => x, _ => null) is null 
+            ? NotFound() 
+            : result.ToOk(x => x.ToApiObject());
+    }
+    
+    [HttpGet("spotify/playlist/{name}")]
+    [ApiKeyAuthorize]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PlayList))]
+    public async Task<IActionResult> GetPlayListByName(string name) {
+        var result = await _audioActions.GetPlayListAsync(name);
+        if (result.IsFaulted) {
+            return result.ToOk(_ => new EmptyResult());
+        }
+        
+        return result.Match(x => x, _ => null) is null 
+            ? NotFound() 
+            : result.ToOk(x => x.ToApiObject());
+    }
+    
+    [HttpPut("spotify/playlist/{name}")]
+    [ApiKeyAuthorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> SetPlayList(string name) {
+        var result = await _audioActions.SetPlayListAsync(name);
         return result.ToOk(_ => new EmptyResult());
     }
 }

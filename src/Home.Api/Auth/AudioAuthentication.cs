@@ -44,7 +44,7 @@ public sealed class ApiKeyAuthorizeFilter : IAsyncAuthorizationFilter {
     }
 
     private async Task<string?> GetExpectedApiKeyAsync() {
-        var work = await _contextFactory.GetAsync();
+        await using var work = await _contextFactory.GetAsync();
         return (await work.Settings.GetByNameAsync(Spotify.AudioApiKeySettingsName))?.Value;
     }
     

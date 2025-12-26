@@ -12,10 +12,12 @@ public static class Setup {
         services.AddTransient<IAudioActions, AudioActions>();
         services.AddTransient<ISpotifyActions, SpotifyActions>();
 
-        services.AddTransient<GetDevices>();
         services.AddTransient<GetDevice>();
+        services.AddTransient<GetDevices>();
+        services.AddTransient<GetPlayList>();
+        services.AddTransient<SetPlayList>();
         services.AddTransient<StartPlayback>();
-
+        
         //Spotify Auth
         services.AddTransient<GetLoginUri>();
         services.AddTransient<HandleLoginCallback>();
