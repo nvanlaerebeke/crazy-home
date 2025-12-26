@@ -83,3 +83,10 @@ zigbee2mqtt:
       enabled: false
       storageClassName: "standard"
       existingVolume: ""
+spotify:
+  #
+  # This secret must contain:
+  #  - SPOTIFY_CLIENT_ID
+  #  - SPOTIFY_CLIENT_SECRET
+  #
+  existingSecret: ""

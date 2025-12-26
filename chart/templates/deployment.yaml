@@ -33,6 +33,10 @@ spec:
         envFrom:
         - configMapRef:
             name: crazy-home-configmap
+{{- if $.Values.spotify.existingSecret }}
+        - secretRef:
+            name: {{ $.Values.spotify.existingSecret }}
+{{- end }}
         ports:
         - containerPort: 8080
           name: {{ $.Chart.Name | lower | trunc 15 }}
