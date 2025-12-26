@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Authorization;
 namespace Home.Api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
 public sealed class AudioController : ControllerBase {
     private readonly ISpotifyActions _spotifyActions;
     private readonly IAudioActions _audioActions;
@@ -22,21 +21,21 @@ public sealed class AudioController : ControllerBase {
     }
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [HttpGet("spotify/login")]
+    [HttpGet("/audio/spotify/login")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Uri))]
     public IActionResult Login() {
         var uri = _spotifyActions.GetLoginUri();
         return uri.ToOk(x => x);
     }
 
-    [HttpGet("spotify/login/callback")]
+    [HttpGet("/audio/spotify/login/callback")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> LoginCallback() {
         var result = await _spotifyActions.HandleLoginCallbackAsync(Request.Query["code"].ToString());
         return result.ToOk(_ => new EmptyResult());
     }
 
-    [HttpGet("spotify/device")]
+    [HttpGet("/audio/spotify/device")]
     [ApiKeyAuthorize]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<AudioDevice>))]
     public async Task<IActionResult> GetAll() {
@@ -44,7 +43,7 @@ public sealed class AudioController : ControllerBase {
         return result.ToOk(x => x.Select(y => y.ToApiObject()));
     }
 
-    [HttpGet("spotify/device/{name}")]
+    [HttpGet("/audio/spotify/device/{name}")]
     [ApiKeyAuthorize]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AudioDevice))]
     public async Task<IActionResult> Get(string name) {
@@ -58,7 +57,7 @@ public sealed class AudioController : ControllerBase {
             : result.ToOk(x => x.ToApiObject());
     }
 
-    [HttpPut("spotify/device/{name}")]
+    [HttpPut("/audio/spotify/device/{name}")]
     [ApiKeyAuthorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> SetDevice(string name) {
@@ -66,7 +65,7 @@ public sealed class AudioController : ControllerBase {
         return result.ToOk(_ => new EmptyResult());
     }
 
-    [HttpGet("spotify/playlist")]
+    [HttpGet("/audio/spotify/playlist")]
     [ApiKeyAuthorize]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PlayList))]
     public async Task<IActionResult> GetPlayList() {
@@ -80,7 +79,7 @@ public sealed class AudioController : ControllerBase {
             : result.ToOk(x => x.ToApiObject());
     }
     
-    [HttpGet("spotify/playlist/{name}")]
+    [HttpGet("/audio/spotify/playlist/{name}")]
     [ApiKeyAuthorize]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PlayList))]
     public async Task<IActionResult> GetPlayListByName(string name) {
@@ -94,7 +93,7 @@ public sealed class AudioController : ControllerBase {
             : result.ToOk(x => x.ToApiObject());
     }
     
-    [HttpPut("spotify/playlist/{name}")]
+    [HttpPut("/audio/spotify/playlist/{name}")]
     [ApiKeyAuthorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> SetPlayList(string name) {
