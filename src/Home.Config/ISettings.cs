@@ -5,4 +5,5 @@ public interface ISettings {
     IPlugwise Plugwise { get; }
     IMqtt Mqtt { get; }
     Auth Auth { get; }
+    Audio Audio { get; }
 }

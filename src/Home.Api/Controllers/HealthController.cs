@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace Home.Api.Controllers;
 
@@ -9,16 +8,6 @@ namespace Home.Api.Controllers;
 /// </summary>
 [AllowAnonymous]
 public sealed class HealthController : ControllerBase {
-    private readonly ILogger<HealthController> _logger;
-
-    /// <summary>
-    /// Constructor for the health endpoints controller class
-    /// </summary>
-    /// <param name="logger"></param>
-    public HealthController(ILogger<HealthController> logger) {
-        _logger = logger;
-    }
-
     /// <summary>
     ///     Health endpoint
     /// </summary>

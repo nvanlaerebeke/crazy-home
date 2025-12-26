@@ -13,6 +13,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Home.Auth\Home.Auth.csproj" />
+        <ProjectReference Include="..\Home.AutoPlayer\Home.AutoPlayer.csproj" />
         <ProjectReference Include="..\Home.Theming\Home.Theming.csproj" />
         <ProjectReference Include="..\MQTT.Actions\MQTT.Actions.csproj" />
         <ProjectReference Include="..\Plugwise.Actions\Plugwise.Actions.csproj"/>

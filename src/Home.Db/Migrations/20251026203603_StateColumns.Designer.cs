@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Home.Db.Migrations
 {
-    [DbContext(typeof(HomeDbContext))]
+    [DbContext(typeof(Context.HomeDbContext))]
     [Migration("20251026203603_StateColumns")]
     partial class StateColumns
     {

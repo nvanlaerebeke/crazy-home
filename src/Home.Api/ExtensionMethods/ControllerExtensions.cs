@@ -19,11 +19,13 @@ public static class ControllerExtensions {
             if (exception is UnauthorizedAccessException) {
                 return new UnauthorizedResult();
             }
-            throw exception;
+            exception = HomeApiException.from(exception);
         }
 
         var error = (exception as HomeApiException)!.GetError();
         switch (error.Code) {
+            case ApiErrorCode.UnAuthorized:
+                return new UnauthorizedResult();
             case ApiErrorCode.InvalidValue:
                 return new BadRequestObjectResult(exception);
             case ApiErrorCode.NotFound:
