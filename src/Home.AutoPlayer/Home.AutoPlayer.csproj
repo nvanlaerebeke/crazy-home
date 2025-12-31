@@ -9,8 +9,8 @@
     <ItemGroup>
       <FrameworkReference Include="Microsoft.AspNetCore.App" />
       <PackageReference Include="LanguageExt.Core" Version="4.2.9" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.1" />
       <PackageReference Include="SpotifyAPI.Web" Version="7.2.1" />
+      <PackageReference Include="Zeroconf" Version="3.7.16" />
     </ItemGroup>
 
     <ItemGroup>

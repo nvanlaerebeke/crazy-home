@@ -1,4 +1,5 @@
-﻿using SpotifyAPI.Web;
+﻿using Home.AutoPlayer.Actions.ZeroConf;
+using SpotifyAPI.Web;
 
 namespace Home.AutoPlayer.Dto;
 
@@ -27,6 +28,19 @@ internal static class ExtensionMethods {
             SnapshotId = playlist.SnapshotId,
             Type = playlist.Type,
             Uri = playlist.Uri
+        };
+    }
+
+    public static Device ToDto(this SpotifyConnectLanDevice device) {
+        return new() {
+            Id = device.DeviceId ?? string.Empty,
+            IsPrivateSession = false,
+            IsRestricted = false,
+            Name = device.Name,
+            SupportsVolume = false,
+            Type = string.Empty,
+            VolumePercent = 100,
+            IsActive = false
         };
     }
 }

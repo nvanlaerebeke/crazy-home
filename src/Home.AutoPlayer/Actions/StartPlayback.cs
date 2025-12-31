@@ -35,8 +35,10 @@ internal sealed class StartPlayback {
         var client = new SpotifyClient(token);
 
         //Resume Playback
-        if (!await client.Player.TransferPlayback(new PlayerTransferPlaybackRequest([device.Id]) { Play = false })) {
-            throw HomeApiException.from(ApiErrorCode.UnknownError);
+        if (!device.IsActive) {
+            if (!await client.Player.TransferPlayback(new PlayerTransferPlaybackRequest([device.Id]) { Play = true })) {
+                throw HomeApiException.from(ApiErrorCode.UnknownError);
+            }
         }
 
         //Enable shuffle (separate request), do not fail if this would error out
@@ -45,7 +47,7 @@ internal sealed class StartPlayback {
         } catch (Exception ex) {
             Console.Error.WriteLine(ex);
         }
-
+        
         return await client.Player.ResumePlayback(
             new PlayerResumePlaybackRequest { DeviceId = device.Id, ContextUri = playList }
         );

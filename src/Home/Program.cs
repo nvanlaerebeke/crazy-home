@@ -13,7 +13,6 @@ public partial class Program {
 
             return host.Services.GetRequiredService<ICommandLineEntryPoint>().StartAsync(args);
         }
-
         new Startup().Start(WebApplication.CreateBuilder(args));
         return Task.CompletedTask;
     }

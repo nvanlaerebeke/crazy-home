@@ -18,14 +18,19 @@ namespace Home.Api;
 
 public class Startup {
     public void Start(WebApplicationBuilder builder) {
+        Console.WriteLine("Starting...");
+        
         ConfigureServices(builder.Services);
 
         // optional: enable detailed logging
+        Console.WriteLine("Adding extra log filters");
         builder.Logging.AddFilter("Microsoft.AspNetCore.Authentication", LogLevel.Debug);
         builder.Logging.AddFilter("Microsoft.IdentityModel", LogLevel.Debug);
 
+        Console.WriteLine("Building application");
         var app = builder.Build();
         ConfigureApp(app);
+        Console.WriteLine("Running application");
         app.Run();
     }
 
@@ -35,11 +40,14 @@ public class Startup {
         app.UseHsts();
 
         //Enable swagger 
+        Console.WriteLine("Adding swagger documentation");
         app.UseSwagger();
         app.UseSwaggerUI();
 
+        Console.WriteLine("Adding auth");
         app.UseAuthorization();
         app.UseAuthentication();
+        Console.WriteLine("Mapping controllers");
         app.MapControllers();
     }
 
@@ -97,12 +105,18 @@ public class Startup {
 
         //Initialize
         var settings = new SettingsProvider().Get();
+        Console.WriteLine("Configuring database access");
         services.AddDatabase(settings);
         services.AddSingleton(settings);
+        Console.WriteLine("Adding plugwise support");;
         services.AddPlugwise(settings);
+        Console.WriteLine("Adding mqtt");
         services.AddMqtt(settings);
+        Console.WriteLine("Adding authentication support");
         services.AddAuth(settings);
+        Console.WriteLine("Adding theming");
         services.AddTheming();
+        Console.WriteLine("Adding AutoPlayer (spotify) support");
         services.AddAudioPlayerSupport(settings);
         return services;
     }

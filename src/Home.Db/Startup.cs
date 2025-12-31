@@ -30,7 +30,10 @@ public static class Startup {
 
     private static void SetupDb(ISettings settings) {
         using var work = new Context.HomeDbContext(settings);
-        work.Database.Migrate();
+        Console.WriteLine("Configuring connection");
         work.ConfigurePragmasAsync().GetAwaiter().GetResult();
+        Console.WriteLine("Running database migration");
+        //work.Database.Migrate();
+        Console.WriteLine("Configuring database finished");
     }
 }
