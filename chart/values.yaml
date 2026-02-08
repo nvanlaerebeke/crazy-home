@@ -11,6 +11,22 @@ plugwise:
     path: /dev/ttyUSB0
 resources:
   replicaCount: 1
+# Example:
+# annotations:
+#   key: value
+# labels:
+#   key: value
+# resources:
+#   limits:
+#     cpu: 100m
+#     memory: 128Mi
+#   requests:
+#     cpu: 100m
+#     memory: 128Mi
+controller:
+  annotations: {}
+  labels: {}
+  resources: {}
 ingress:
   # If true, the ingress will be created.
   enabled: false

@@ -3,9 +3,15 @@ kind: Deployment
 metadata:
   labels:
     app: {{ $.Chart.Name | lower }}
+{{- with $.Values.controller.labels }}
+{{- toYaml . | nindent 4 }}
+{{- end }}
   annotations:
     #restart when the config map changes
     checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{- with $.Values.controller.annotations }}
+{{- toYaml . | nindent 4 }}
+{{- end }}
   name:  {{ $.Chart.Name | lower }}
 spec:
   replicas:  {{ $.Values.resources.replicaCount }}
@@ -16,6 +22,9 @@ spec:
     metadata:
       labels:
         app:  {{ $.Chart.Name | lower }}
+{{- with $.Values.controller.labels }}
+{{- toYaml . | nindent 8 }}
+{{- end }}
     spec:
       containers:
       - image: "{{ .Values.global.registry }}/{{ .Values.global.image }}:{{ .Values.global.tag }}"
@@ -40,6 +49,10 @@ spec:
         ports:
         - containerPort: 8080
           name: {{ $.Chart.Name | lower | trunc 15 }}
+{{- with $.Values.controller.resources }}
+        resources:
+{{- toYaml . | nindent 10 }}
+{{- end }}
         readinessProbe:
           httpGet:
             scheme: HTTP
