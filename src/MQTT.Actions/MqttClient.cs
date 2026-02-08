@@ -11,6 +11,7 @@ namespace MQTT.Actions;
 /// The Mqtt client that connects to the Zigbee controller
 /// </summary>
 internal sealed class MqttClient {
+    private static object _lockObject = new();
     private readonly ISettings _settings;
     private readonly ILogger<MqttClient> _logger;
 

@@ -1,17 +1,26 @@
-﻿using LanguageExt.Common;
+﻿using System;
+using System.Threading.Tasks;
+using LanguageExt.Common;
+using Microsoft.Extensions.Logging;
 using MQTT.Actions.Objects.Power;
 
 namespace MQTT.Actions;
 
 internal class MqttPowerActions : IMqttPowerActions {
     private readonly MqttClient _client;
+    private readonly ILogger<MqttPowerActions> _logger;
 
-    public MqttPowerActions(MqttClient client) {
+    public MqttPowerActions(
+        MqttClient client,
+        ILogger<MqttPowerActions> logger
+    ) {
         _client = client;
+        _logger = logger;
     }
 
     public async Task<Result<bool>> PublishPowerUpdateAsync(PowerReaderRecordDto data) {
         try {
+            _logger.LogInformation("Sending power update to MQTT");
             // Base topics that DSMR Reader uses in "Split topic" mode.
             // If you configured another prefix in DSMR Reader, change it here.
             const string baseTopic = "dsmr/reading";
@@ -64,6 +73,7 @@ internal class MqttPowerActions : IMqttPowerActions {
         }
 
         // DSMR Reader split topic payload is just a string numeric/timestamp/etc
+        _logger.LogInformation("Sending to topic {Topic}: {Payload}", topic, payload);
         await _client.SendAsync(new DsmrMqttMessage(topic, payload), true);
     }
 }

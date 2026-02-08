@@ -7,3 +7,4 @@ data:
   MQTT_CLIENT_NAME: {{ default "crazy-home" (index .Values "mqtt" "client_name") | quote }}
   MQTT_BROKER: {{ .Values.mqtt.broker | quote }}
   MQTT_PORT: {{ .Values.mqtt.port | quote }}
+  POWER_URL: {{ .Values.power.url | quote }}

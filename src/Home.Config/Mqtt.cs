@@ -26,7 +26,7 @@ internal sealed class Mqtt : IMqtt {
     public string ClientName {
         get {
             var envVar = Environment.GetEnvironmentVariable("MQTT_CLIENT_NAME");
-            return string.IsNullOrEmpty(envVar) ? Environment.MachineName : envVar;
+            return string.IsNullOrEmpty(envVar) ? Environment.MachineName : $"envVar-{Environment.MachineName}";
         }
     }
 
