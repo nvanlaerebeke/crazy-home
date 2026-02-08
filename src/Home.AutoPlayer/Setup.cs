@@ -17,6 +17,7 @@ public static class Setup {
         services.AddTransient<GetPlayList>();
         services.AddTransient<SetPlayList>();
         services.AddTransient<StartPlayback>();
+        services.AddTransient<GetCover>();
         
         //Spotify Auth
         services.AddTransient<GetLoginUri>();

@@ -9,4 +9,5 @@ public interface IAudioActions {
     Task<Result<bool>> StartPlayBackAsync(string deviceName);
     Task<Result<bool>> SetPlayListAsync(string name);
     Task<Result<PlayList?>> GetPlayListAsync(string? name = null);
+    Task<Result<Uri>> GetCoverUrlAsync(string id);
 }

@@ -37,7 +37,8 @@ public static class Startup {
         services.AddSingleton<IMqttSensorActions, MqttSensorActions>();
         services.AddSingleton<IMqttDeviceActions, MqttDeviceActions>();
         services.AddSingleton<IMqttSwitchActions, MqttSwitchActions>();
-        
+        services.AddSingleton<IMqttPowerActions, MqttPowerActions>();
+
         services.AddSingleton<PermitJoining>();
         
         services.AddTransient<Actions.Plug.GetAll>();

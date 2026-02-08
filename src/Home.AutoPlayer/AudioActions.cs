@@ -10,19 +10,22 @@ internal sealed class AudioActions : IAudioActions {
     private readonly StartPlayback _startPlayback;
     private readonly SetPlayList _setPlayList;
     private readonly GetPlayList _getPlayList;
+    private readonly GetCover _getCover;
 
     public AudioActions(
         GetDevice getDevice, 
         GetDevices getDevices,
         StartPlayback startPlayback,
         SetPlayList setPlayList,
-        GetPlayList getPlayList
+        GetPlayList getPlayList,
+        GetCover getCover
     ) {
         _getDevice = getDevice;
         _getDevices = getDevices;
         _startPlayback = startPlayback;
         _setPlayList = setPlayList;
         _getPlayList = getPlayList;
+        _getCover = getCover;
     }
     public async Task<Result<List<Device>>> GetDevicesAsync() {
         try {
@@ -62,6 +65,14 @@ internal sealed class AudioActions : IAudioActions {
             return await _getPlayList.ExecuteAsync(name);
         } catch (Exception ex) {
             return new Result<PlayList?>(ex);
+        }
+    }
+
+    public async Task<Result<Uri>> GetCoverUrlAsync(string id) {
+        try {
+            return await _getCover.ExecuteAsync(id);
+        } catch (Exception ex) {
+            return new Result<Uri>(ex);
         }
     }
 }

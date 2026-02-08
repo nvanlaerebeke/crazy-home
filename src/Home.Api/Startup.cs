@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Plugwise.Actions;
 using Home.Config;
 using Home.Db;
+using Home.PowerReader;
 using Home.Theming;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Logging;
@@ -19,7 +20,7 @@ namespace Home.Api;
 public class Startup {
     public void Start(WebApplicationBuilder builder) {
         Console.WriteLine("Starting...");
-        
+
         ConfigureServices(builder.Services);
 
         // optional: enable detailed logging
@@ -45,6 +46,7 @@ public class Startup {
         app.UseSwaggerUI();
 
         Console.WriteLine("Adding auth");
+        app.UseCors("AllowAll");
         app.UseAuthorization();
         app.UseAuthentication();
         Console.WriteLine("Mapping controllers");
@@ -52,6 +54,12 @@ public class Startup {
     }
 
     public IServiceCollection ConfigureServices(IServiceCollection services) {
+        services.AddCors(options => {
+            options.AddPolicy("AllowAll", p => p
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+        });
+
         // Add services to the container.
         services.AddControllers().AddJsonOptions(o => {
             // serializes enums as strings; also affects swagger model binding in JSON bodies
@@ -89,14 +97,14 @@ public class Startup {
                     BearerFormat = "JWT"
                 });
 
-            c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
-            {
-                Description = "API key header. Example: \"X-API-KEY: {key}\"",
-                Name = "X-API-KEY",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey
-            });
-            
+            c.AddSecurityDefinition("ApiKey",
+                new OpenApiSecurityScheme {
+                    Description = "API key header. Example: \"X-API-KEY: {key}\"",
+                    Name = "X-API-KEY",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
+                });
+
             c.AddSecurityRequirement(document =>
                 new OpenApiSecurityRequirement { [new OpenApiSecuritySchemeReference("Bearer", document)] = [] });
             c.AddSecurityRequirement(document =>
@@ -108,7 +116,8 @@ public class Startup {
         Console.WriteLine("Configuring database access");
         services.AddDatabase(settings);
         services.AddSingleton(settings);
-        Console.WriteLine("Adding plugwise support");;
+        Console.WriteLine("Adding plugwise support");
+        ;
         services.AddPlugwise(settings);
         Console.WriteLine("Adding mqtt");
         services.AddMqtt(settings);
@@ -118,6 +127,9 @@ public class Startup {
         services.AddTheming();
         Console.WriteLine("Adding AutoPlayer (spotify) support");
         services.AddAudioPlayerSupport(settings);
+        Console.WriteLine("Adding Power Reader support");
+        services.AddPowerReader();
+        
         return services;
     }
 }

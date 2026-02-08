@@ -238,7 +238,7 @@ internal sealed class MqttClient {
 
     public bool IsConnected() => _client is not null;
 
-    public async Task SendAsync(IMqttRequest request) {
+    public async Task SendAsync(IMqttRequest request, bool retain = false) {
         if (_client is null) {
             await ConnectAsync();
         }
@@ -250,6 +250,7 @@ internal sealed class MqttClient {
         await _client.PublishAsync(new MqttApplicationMessageBuilder()
             .WithTopic(request.GetTopic())
             .WithPayload(request.GetPayload())
+            .WithRetainFlag(retain)
             .Build());
     }
 }

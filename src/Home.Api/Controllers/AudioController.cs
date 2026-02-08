@@ -100,4 +100,15 @@ public sealed class AudioController : ControllerBase {
         var result = await _audioActions.SetPlayListAsync(name);
         return result.ToOk(_ => new EmptyResult());
     }
+    
+    [HttpGet("/audio/spotify/playlist/{id}/cover")]
+    [ApiKeyAuthorize]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status307TemporaryRedirect)]
+    public async Task<IActionResult> GetCoverByPlayListId(string id) {
+        var result = await _audioActions.GetCoverUrlAsync(id);
+        return result.IsFaulted 
+            ? result.ToOk(_ => new EmptyResult()) 
+            : result.Match<ActionResult>(x => Redirect(x.ToString()), _ => BadRequest());
+    }
 }

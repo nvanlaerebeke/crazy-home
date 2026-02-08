@@ -6,5 +6,6 @@ public enum ApiErrorCode {
     NotFound,
     Exists,
     UnAuthorized,
-    InvalidPlayListName
+    InvalidPlayListName,
+    NoCoverImage
 }

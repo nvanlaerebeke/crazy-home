@@ -6,4 +6,5 @@ public interface ISettings {
     IMqtt Mqtt { get; }
     Auth Auth { get; }
     Audio Audio { get; }
+    Power Power { get; }
 }

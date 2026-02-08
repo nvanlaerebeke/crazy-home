@@ -6,4 +6,5 @@ internal class Settings : ISettings {
     public IMqtt Mqtt => new Mqtt();
     public Auth Auth => new();
     public Audio Audio => new();
+    public Power Power => new Power();
 }

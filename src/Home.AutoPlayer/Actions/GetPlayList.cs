@@ -30,7 +30,7 @@ internal sealed class GetPlayList {
         if (string.IsNullOrEmpty(token)) {
             throw HomeApiException.from(ApiErrorCode.NotFound);
         }
-
+        
         var client = new SpotifyClient(token);
         return (await client.Playlists.Get(name)).ToDto();
     }
