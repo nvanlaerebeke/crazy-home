@@ -5,7 +5,7 @@ namespace Home.Theming;
 
 public static class Setup {
     public static IServiceCollection AddTheming(this IServiceCollection services) {
-        services.AddSingleton<IThemeService, ThemeService>();
+        services.AddTransient<IThemeService, ThemeService>();
         services.AddTransient<SeasonService>();
         
         services.AddTransient<Add>();

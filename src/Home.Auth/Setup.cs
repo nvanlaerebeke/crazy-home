@@ -14,7 +14,7 @@ namespace Home.Auth;
 
 public static class Setup {
     public static IServiceCollection AddAuth(this IServiceCollection services, ISettings settings) {
-        services.AddSingleton<IAuthActions, AuthActions>();
+        services.AddTransient<IAuthActions, AuthActions>();
 
         services.AddTransient<LogOn>();
         services.AddTransient<LogOut>();

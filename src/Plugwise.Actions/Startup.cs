@@ -6,7 +6,7 @@ namespace Plugwise.Actions;
 
 public static class Startup {
     public static void AddPlugwise(this IServiceCollection serviceCollection, ISettings settings) {
-        serviceCollection.AddSingleton<IPlugwiseService, PlugwiseService>();
+        serviceCollection.AddTransient<IPlugwiseService, PlugwiseService>();
         serviceCollection.AddPlugwise(settings.Plugwise.SerialPort);
 
         if (settings.Plugwise.BackgroundCaching) {

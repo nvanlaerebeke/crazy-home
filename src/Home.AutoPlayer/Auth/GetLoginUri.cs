@@ -18,7 +18,12 @@ internal sealed class GetLoginUri {
             new Uri(_redirectUri.ToString()),
             _clientId,
             LoginRequest.ResponseType.Code) {
-            Scope = [Scopes.UserReadPlaybackState, Scopes.UserModifyPlaybackState], ShowDialog = true
+            Scope = [
+                Scopes.UserReadPlaybackState, 
+                Scopes.UserModifyPlaybackState,
+                Scopes.UserReadCurrentlyPlaying,
+                Scopes.UserLibraryRead
+            ], ShowDialog = true
         };
 
         return login.ToUri();

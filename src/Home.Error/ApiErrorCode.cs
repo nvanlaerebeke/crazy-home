@@ -7,5 +7,6 @@ public enum ApiErrorCode {
     Exists,
     UnAuthorized,
     InvalidPlayListName,
-    NoCoverImage
+    NoCoverImage,
+    NoSpotifyDeviceFound
 }

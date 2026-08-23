@@ -111,4 +111,32 @@ public sealed class AudioController : ControllerBase {
             ? result.ToOk(_ => new EmptyResult()) 
             : result.Match<ActionResult>(x => Redirect(x.ToString()), _ => BadRequest());
     }
+    
+    [HttpGet("/audio/spotify/playlists")]
+    [ApiKeyAuthorize]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<PlayList>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status307TemporaryRedirect)]
+    public async Task<IActionResult> GetCurrentUserPlaylists() {
+        var result = await _audioActions.GetCurrentUserPlaylistsAsync();
+        return result.ToOk(x => x.Select(p => p.ToApiObject()));
+    }
+    
+    [HttpGet("/audio/spotify/playlist/last")]
+    [ApiKeyAuthorize]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PlayList))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetLastPlayedPlaylist() {
+        var result = await _audioActions.GetLastPlayedPlaylistsAsync();
+        return result.ToOk(p => p.ToApiObject());
+    }
+    
+    [HttpPost("/audio/spotify/liked")]
+    [ApiKeyAuthorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> PlayLikedSongs() {
+        var result = await _audioActions.PlayLikedSongsAsync();
+        return result.ToOk(_ => new EmptyResult());
+    }
 }

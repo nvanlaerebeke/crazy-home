@@ -12,7 +12,7 @@ internal class RequestManager : IRequestManager {
     private readonly ILogger<RequestManager> _logger;
     private const int TimeOutDuration = 5000;
     private readonly Connection? _connection;
-    private readonly object _requestLock = new();
+    private static readonly object _requestLock = new();
     private readonly ManualResetEvent _wait = new(false);
     private Request? _currentRequest;
 

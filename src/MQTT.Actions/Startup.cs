@@ -10,7 +10,7 @@ namespace MQTT.Actions;
 
 public static class Startup {
     public static IServiceCollection AddMqtt(this IServiceCollection services, ISettings settings) {
-        //Caching support
+        //Caching support, these are singletons
         services.AddMemoryCache();
         services.AddSingleton<BridgeCache>();
         services.AddSingleton<DeviceCache>();
@@ -24,22 +24,22 @@ public static class Startup {
         services.AddHostedService<ReconnectService>();
 
         //Routing
-        services.AddSingleton<BridgeInfoMessage>();
-        services.AddSingleton<DeviceMessage>();
-        services.AddSingleton<LogMessage>();
-        services.AddSingleton<MessageRouter>();
-        services.AddSingleton<PlugMessage>();
-        services.AddSingleton<SensorMessage>();
-        services.AddSingleton<SwitchMessage>();
+        services.AddTransient<BridgeInfoMessage>();
+        services.AddTransient<DeviceMessage>();
+        services.AddTransient<LogMessage>();
+        services.AddTransient<MessageRouter>();
+        services.AddTransient<PlugMessage>();
+        services.AddTransient<SensorMessage>();
+        services.AddTransient<SwitchMessage>();
 
         //Actions
-        services.AddSingleton<IMqttPlugActions, MqttPlugActions>();
-        services.AddSingleton<IMqttSensorActions, MqttSensorActions>();
-        services.AddSingleton<IMqttDeviceActions, MqttDeviceActions>();
-        services.AddSingleton<IMqttSwitchActions, MqttSwitchActions>();
-        services.AddSingleton<IMqttPowerActions, MqttPowerActions>();
+        services.AddTransient<IMqttPlugActions, MqttPlugActions>();
+        services.AddTransient<IMqttSensorActions, MqttSensorActions>();
+        services.AddTransient<IMqttDeviceActions, MqttDeviceActions>();
+        services.AddTransient<IMqttSwitchActions, MqttSwitchActions>();
+        services.AddTransient<IMqttPowerActions, MqttPowerActions>();
 
-        services.AddSingleton<PermitJoining>();
+        services.AddTransient<PermitJoining>();
         
         services.AddTransient<Actions.Plug.GetAll>();
         services.AddTransient<Actions.Plug.GetPlugStatus>();

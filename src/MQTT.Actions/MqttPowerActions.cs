@@ -52,7 +52,7 @@ internal class MqttPowerActions : IMqttPowerActions {
 
             // 5) gas (if you want DSMR Reader "extra device" style topics)
             // DSMR Reader typically uses extra_device_* topics under the same base.
-            await PublishIfPresent($"{baseTopic}/consumption_gas_delivered", data.GasUsed.AsCubicMeters());
+            await PublishIfPresent("dsmr/consumption_gas_delivered", data.GasUsed.AsCubicMeters());
 
             // 6) “nice to have” stats (not required for Energy)
             // Tariff indicator, power failure counts, breaker, etc.

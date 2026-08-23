@@ -1,6 +1,8 @@
 ﻿using Home.AutoPlayer.Actions;
 using Home.AutoPlayer.Dto;
 using LanguageExt.Common;
+using SpotifyAPI.Web;
+using Device = Home.AutoPlayer.Dto.Device;
 
 namespace Home.AutoPlayer;
 
@@ -11,6 +13,9 @@ internal sealed class AudioActions : IAudioActions {
     private readonly SetPlayList _setPlayList;
     private readonly GetPlayList _getPlayList;
     private readonly GetCover _getCover;
+    private readonly GetUserPlaylists _getUserPlaylists;
+    private readonly GetLastPlayedPlaylist _getLastPlayedPlaylist;
+    private readonly PlayLikedSongs _playLikedSongs;
 
     public AudioActions(
         GetDevice getDevice, 
@@ -18,7 +23,10 @@ internal sealed class AudioActions : IAudioActions {
         StartPlayback startPlayback,
         SetPlayList setPlayList,
         GetPlayList getPlayList,
-        GetCover getCover
+        GetCover getCover,
+        GetUserPlaylists getUserPlaylists,
+        GetLastPlayedPlaylist getLastPlayedPlaylist,
+        PlayLikedSongs playLikedSongs
     ) {
         _getDevice = getDevice;
         _getDevices = getDevices;
@@ -26,6 +34,9 @@ internal sealed class AudioActions : IAudioActions {
         _setPlayList = setPlayList;
         _getPlayList = getPlayList;
         _getCover = getCover;
+        _getUserPlaylists = getUserPlaylists;
+        _getLastPlayedPlaylist = getLastPlayedPlaylist;
+        _playLikedSongs = playLikedSongs;
     }
     public async Task<Result<List<Device>>> GetDevicesAsync() {
         try {
@@ -73,6 +84,30 @@ internal sealed class AudioActions : IAudioActions {
             return await _getCover.ExecuteAsync(id);
         } catch (Exception ex) {
             return new Result<Uri>(ex);
+        }
+    }
+
+    public async Task<Result<List<PlayList>>> GetCurrentUserPlaylistsAsync() {
+        try {
+            return await _getUserPlaylists.GetAsync();
+        } catch (Exception ex) {
+            return new Result<List<PlayList>>(ex);
+        }
+    }
+    
+    public async Task<Result<FullPlaylist?>> GetLastPlayedPlaylistsAsync() {
+        try {
+            return await _getLastPlayedPlaylist.GetAsync();
+        } catch (Exception ex) {
+            return new Result<FullPlaylist?>(ex);
+        }
+    }
+    
+    public async Task<Result<bool>> PlayLikedSongsAsync() {
+        try {
+            return await _playLikedSongs.PlayAsync();
+        } catch (Exception ex) {
+            return new Result<bool>(ex);
         }
     }
 }

@@ -11,23 +11,23 @@ public static class Startup {
     public static void AddPlugwise(this IServiceCollection services, string serialPort) {
         Settings.SerialPort = serialPort;
 
+        //Caches - these are singleton objects
         services.AddMemoryCache();
-
         services.AddSingleton<CircleInfoCache>();
         services.AddSingleton<UsageCache>();
-        services.AddSingleton<IRequestManager, RequestManager>();
         services.AddSingleton<Calibrator>();
-        services.AddSingleton<IPlugControl, PlugControl>();
+        
+        services.AddTransient<IRequestManager, RequestManager>();
+        services.AddTransient<IPlugControl, PlugControl>();
 
         //Actions
-        services.AddSingleton<PlugwiseActions>();
-        services.AddSingleton<On>();
-        services.AddSingleton<Off>();
+        services.AddTransient<PlugwiseActions>();
+        services.AddTransient<On>();
+        services.AddTransient<Off>();
     }
 
     public static void AddPlugwiseCache(this IServiceCollection services, List<string> macAddresses) {
         Settings.CachedMacAddresses = macAddresses;
-
         services.AddHostedService<CircleInfoService>();
     }
 }

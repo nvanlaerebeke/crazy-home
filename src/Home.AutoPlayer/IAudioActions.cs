@@ -1,5 +1,7 @@
 ﻿using Home.AutoPlayer.Dto;
 using LanguageExt.Common;
+using SpotifyAPI.Web;
+using Device = Home.AutoPlayer.Dto.Device;
 
 namespace Home.AutoPlayer;
 
@@ -10,4 +12,7 @@ public interface IAudioActions {
     Task<Result<bool>> SetPlayListAsync(string name);
     Task<Result<PlayList?>> GetPlayListAsync(string? name = null);
     Task<Result<Uri>> GetCoverUrlAsync(string id);
+    Task<Result<List<PlayList>>> GetCurrentUserPlaylistsAsync();
+    Task<Result<FullPlaylist?>> GetLastPlayedPlaylistsAsync();
+    Task<Result<bool>> PlayLikedSongsAsync();
 }
